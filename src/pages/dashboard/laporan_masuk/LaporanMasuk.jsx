@@ -80,10 +80,10 @@ export default function LaporanMasuk() {
 		[],
 	);
 
-	const saveVerification = (report, status, note) => {
+	const saveVerification = (report, updates) => {
 		setLaporan((currentReports) =>
 			currentReports.map((item) =>
-				item.idTiket === report.idTiket ? { ...item, status, catatan: note } : item,
+				item.idTiket === report.idTiket ? { ...item, ...updates } : item,
 			),
 		);
 		setSelectedReport(null);
@@ -133,45 +133,33 @@ export default function LaporanMasuk() {
 }
 
 const stages = [
-	{
-		title: 'Menunggu',
-		description: 'Menunggu petugas memverifikasi laporan.',
-	},
-	{
-		title: 'Verifikasi',
-		description: 'Verifikasi kelengkapan bukti awal laporan.',
-	},
-	{
-		title: 'Investigasi',
-		description: 'Melakukan pengecekan langsung ke lapangan.',
-	},
-	{
-		title: 'Selesai',
-		description: 'Menentukan hasil akhir dari laporan.',
-	},
+	{ title: 'Menunggu', description: 'Menunggu satgas memverifikasi laporan.' },
+	{ title: 'Verifikasi', description: 'Verifikasi kelengkapan bukti awal pelaporan.' },
+	{ title: 'Investigasi', description: 'Melakukan pengecekan langsung ke lapangan.' },
+	{ title: 'Selesai', description: 'Menentukan hasil akhir dari laporan.' },
 ];
 
 const statusToStage = {
-	Menunggu: 0,
+	Menunggu: 1,
 	Verifikasi: 1,
 	Investigasi: 2,
-	Selesai: 3,
+	Selesai: 4,
 	'Di Tolak': 1,
 };
 
 function VerifikasiOverlay({ report, onClose, onSave }) {
-	const currentStage = statusToStage[report.status] ?? 0;
+	const currentStage = report.activeStage ?? statusToStage[report.status] ?? 1;
 	const isRejected = report.status === 'Di Tolak';
-	const isComplete = report.status === 'Selesai' || isRejected;
-	const [decision, setDecision] = useState(isRejected ? 'reject' : 'continue');
-	const [continueNote, setContinueNote] = useState(report.catatan ?? '');
+	const isComplete = currentStage >= stages.length && !isRejected;
+	const [decision, setDecision] = useState('continue');
+	const [continueNote, setContinueNote] = useState('');
 	const [rejectNote, setRejectNote] = useState('');
+	const [stageNote, setStageNote] = useState('');
+	const history = getVisibleHistory(report, currentStage, isRejected);
 
 	useEffect(() => {
 		const handleKeyDown = (event) => {
-			if (event.key === 'Escape') {
-				onClose();
-			}
+			if (event.key === 'Escape') onClose();
 		};
 		const previousOverflow = document.body.style.overflow;
 		document.body.style.overflow = 'hidden';
@@ -184,16 +172,34 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 	}, [onClose]);
 
 	const handleSave = () => {
-		const note = decision === 'reject' ? rejectNote : continueNote;
-		const nextStatus = decision === 'reject'
-			? 'Di Tolak'
-			: stages[Math.min(currentStage + 1, stages.length - 1)].title;
-		onSave(report, nextStatus, note);
+		const isDecisionStage = currentStage === 1;
+		const isRejecting = isDecisionStage && decision === 'reject';
+		const note = isDecisionStage
+			? (isRejecting ? rejectNote : continueNote)
+			: stageNote;
+		const record = {
+			stage: currentStage,
+			decision: isRejecting ? 'reject' : 'continue',
+			note,
+			createdAt: '',
+			actor: 'Satgas',
+		};
+
+		onSave(report, {
+			status: isRejecting
+				? 'Di Tolak'
+				: currentStage === 1
+					? 'Investigasi'
+					: 'Selesai',
+			activeStage: isRejecting ? currentStage : currentStage + 1,
+			catatan: note,
+			history: [...history, record],
+		});
 	};
 
 	return (
 		<div
-			className="fixed inset-0 z-50 flex items-center justify-center bg-[#07395f]/95 p-3 sm:p-6"
+			className="fixed inset-0 z-50 flex items-center justify-center bg-[#07395f]/50 p-6"
 			onMouseDown={(event) => {
 				if (event.target === event.currentTarget) onClose();
 			}}
@@ -202,14 +208,14 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="verifikasi-title"
-				className="flex max-h-[92vh] w-full max-w-165 flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
+				className="flex max-h-[92vh] w-full max-w-240 flex-col overflow-hidden rounded-xl bg-white shadow-2xl"
 			>
-				<header className="flex items-start justify-between border-b border-slate-100 px-5 py-4 sm:px-7">
+				<header className="flex items-start justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
 					<div>
 						<h2 id="verifikasi-title" className="text-lg font-bold tracking-tight text-[#0B3C65]">
 							Verifikasi Penindakan
 						</h2>
-						<p className="mt-1 text-[10px] text-slate-500">
+						<p className="mt-1 text-[11px] text-slate-500">
 							<strong className="text-[#0B3C65]">{report.idTiket}</strong>
 							<span className="mx-1.5">·</span>
 							{report.pelapor}
@@ -227,161 +233,329 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 					</button>
 				</header>
 
-				<div className="space-y-4 overflow-y-auto px-5 py-4 sm:px-7 sm:py-5">
-					<section className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 sm:p-3.5">
-						<h3 className="mb-3 border-b border-slate-200 pb-2 text-[10px] font-bold uppercase tracking-wide text-[#0B3C65]">
-							<i className="bi bi-link-45deg mr-1.5 text-sm" aria-hidden="true"></i>
-							Alur Prosedur &amp; Tahapan Penanganan BAP
-						</h3>
-						<div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-							{stages.map((stage, index) => {
-								const isPast = index < currentStage || (report.status === 'Selesai' && index === currentStage);
-								const isActive = index === currentStage && !isComplete;
-								const isCurrentFinished = index === currentStage && isComplete;
-
-								return (
-									<div
-										key={stage.title}
-										className={`min-h-25.5] rounded-lg border p-2.5 ${
-											isActive
-												? 'border-sky-500 bg-white shadow-[0_0_0_1px_rgba(14,165,233,0.12)]'
-												: isPast || isCurrentFinished
-													? 'border-emerald-200 bg-white'
-													: 'border-slate-200 bg-slate-50 text-slate-400'
-										}`}
-									>
-										<div className="mb-1.5 flex items-center justify-between">
-											<span className="text-[8px] font-bold uppercase tracking-wide">
-												Tahap {index + 1}{isActive ? ' •' : ''}
-											</span>
-											<span className={`flex h-3.5 w-3.5 items-center justify-center rounded-full text-[8px] ${
-												isPast || isCurrentFinished
-													? 'bg-emerald-100 text-emerald-600'
-													: isActive
-														? 'bg-sky-100 text-sky-700'
-														: 'bg-slate-200 text-slate-500'
-											}`}>
-												{isPast || isCurrentFinished
-													? <i className="bi bi-check-lg" aria-hidden="true"></i>
-													: index + 1}
-											</span>
-										</div>
-										<p className="text-[10px] font-bold">{stage.title}</p>
-										<p className="mt-1 text-[9px] leading-relaxed">{stage.description}</p>
-										{isActive && (
-											<p className="mt-2 border-t border-slate-100 pt-1.5 text-[8px] font-semibold text-sky-700">
-												Sedang Diproses
-											</p>
-										)}
-										{!isActive && index > currentStage && (
-											<p className="mt-2 border-t border-slate-200 pt-1.5 text-[8px]">
-												Menunggu Tahap {index}
-											</p>
-										)}
-									</div>
-								);
-							})}
-						</div>
-					</section>
+				<div className="space-y-4 overflow-y-auto px-5 py-4 sm:px-6 sm:py-4">
+					<ProgressPanel
+						report={report}
+						currentStage={currentStage}
+						isRejected={isRejected}
+					/>
 
 					<section>
-						<h3 className="mb-2.5 text-[10px] font-bold uppercase tracking-wide text-[#0B3C65]">
+						<h3 className="mb-2.5 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
 							<i className="bi bi-clipboard2-check mr-1.5 text-sm" aria-hidden="true"></i>
 							Riwayat Catatan
 						</h3>
-						<div className="rounded-xl border border-slate-200 p-3.5 sm:p-4">
-							<div className="mb-3 flex items-center gap-2 text-[10px] font-semibold text-slate-700">
-								<span className="rounded-md bg-emerald-100 px-2 py-1 text-[9px] text-emerald-700">
-									Tahap {currentStage + 1}
-								</span>
-								{stages[currentStage].title}
-								{isRejected && <span className="text-rose-600">· Laporan ditolak</span>}
-							</div>
+						<div className="space-y-2.5 rounded-xl border border-slate-200 p-3.5 sm:p-4">
+							{history.map((record, index) => (
+								<HistoryRecord key={`${record.stage}-${index}`} record={record} />
+							))}
 
-							{isComplete ? (
-								<div className={`rounded-lg border p-3 text-xs ${
-									isRejected
-										? 'border-rose-200 bg-rose-50 text-rose-800'
-										: 'border-emerald-200 bg-emerald-50 text-emerald-800'
-								}`}>
-									<p className="font-semibold">{isRejected ? 'Laporan Ditolak' : 'Penanganan Selesai'}</p>
-									<p className="mt-1 text-[10px]">{report.catatan || 'Belum ada catatan pada tahap ini.'}</p>
-								</div>
-							) : (
-								<div className="grid gap-2.5 md:grid-cols-2">
-									<DecisionCard
-										selected={decision === 'continue'}
-										variant="continue"
-										title="Opsi: Laporan Dilanjutkan"
-										badge="Status Terpilih"
-										note={continueNote}
-										placeholder="Tambahkan catatan untuk melanjutkan laporan"
-										onSelect={() => setDecision('continue')}
-										onNoteChange={setContinueNote}
-										nextStep={`Tindak lanjut: Masuk ke tahap ${Math.min(currentStage + 2, stages.length)} berikutnya`}
-									/>
-									<DecisionCard
-										selected={decision === 'reject'}
-										variant="reject"
-										title="Opsi: Laporan Ditolak"
-										badge="Opsi Penolakan"
-										note={rejectNote}
-										placeholder="Masukkan catatan penolakan"
-										onSelect={() => setDecision('reject')}
-										onNoteChange={setRejectNote}
-										nextStep="Tindak lanjut: Laporan selesai dengan status ditolak"
-									/>
-								</div>
+							{!isComplete && !isRejected && currentStage === 1 && (
+								<StagePanel
+									stage={1}
+									title="Verifikasi"
+									onSave={handleSave}
+								>
+									<div className="grid gap-2 md:grid-cols-2">
+										<DecisionCard
+											selected={decision === 'continue'}
+											variant="continue"
+											title="Opsi: Laporan Dilanjutkan / Terverifikasi"
+											badge={decision === 'continue' ? 'Status Terpilih' : 'Opsi Verifikasi'}
+											note={continueNote}
+											placeholder="Masukkan catatan"
+											onSelect={() => setDecision('continue')}
+											onNoteChange={setContinueNote}
+											nextStep="Tindak Lanjut: Masuk ke tahap selanjutnya"
+											actionLabel="Pilih Verifikasi"
+										/>
+										<DecisionCard
+											selected={decision === 'reject'}
+											variant="reject"
+											title="Opsi: Laporan Ditolak"
+											badge={decision === 'reject' ? 'Status Terpilih' : 'Opsi Penolakan'}
+											note={rejectNote}
+											placeholder="Masukkan catatan"
+											onSelect={() => setDecision('reject')}
+											onNoteChange={setRejectNote}
+											nextStep="Tindak Lanjut: Laporan selesai dengan status ditolak"
+											actionLabel="Pilih Ditolak"
+										/>
+									</div>
+								</StagePanel>
 							)}
 
-							<div className="mt-3 flex justify-end">
-								{isComplete ? (
-									<button
-										type="button"
-										onClick={onClose}
-										className="rounded-lg bg-[#0B3C65] px-4 py-2 text-[10px] font-semibold text-white transition hover:bg-blue-900"
-									>
-										Tutup
-									</button>
-								) : (
-									<button
-										type="button"
-										onClick={handleSave}
-										className={`rounded-lg px-4 py-2 text-[10px] font-semibold text-white transition ${
-											decision === 'reject'
-												? 'bg-rose-600 hover:bg-rose-700'
-												: 'bg-emerald-600 hover:bg-emerald-700'
-										}`}
-									>
-										Simpan &amp; Lanjutkan
-										<i className="bi bi-arrow-right ml-2" aria-hidden="true"></i>
-									</button>
-								)}
-							</div>
+							{!isComplete && !isRejected && currentStage === 2 && (
+								<StagePanel
+									stage={2}
+									title="Investigasi"
+									onSave={handleSave}
+									saveLabel="Simpan & Lanjutkan"
+								>
+									<StageNoteField
+										label="Catatan Hasil Investigasi"
+										value={stageNote}
+										onChange={setStageNote}
+										placeholder="Tuliskan hasil investigasi..."
+									/>
+								</StagePanel>
+							)}
+
+							{!isComplete && !isRejected && currentStage === 3 && (
+								<StagePanel
+									stage={3}
+									title="Selesai"
+									onSave={handleSave}
+									saveLabel="Simpan"
+									canSave={Boolean(stageNote.trim())}
+								>
+									<StageNoteField
+										label="Hasil Akhir Laporan"
+										value={stageNote}
+										onChange={setStageNote}
+										placeholder="Tuliskan hasil akhir laporan..."
+										required
+									/>
+								</StagePanel>
+							)}
+
+							{isComplete && history.length === 0 && (
+								<p className="rounded-lg bg-slate-50 px-3 py-4 text-xs text-slate-500">
+									Seluruh tahapan penanganan laporan telah selesai.
+								</p>
+							)}
 						</div>
 					</section>
 
-					{stages.slice(currentStage + 1).map((stage, index) => (
-						<div
-							key={stage.title}
-							className="flex items-center justify-between rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-3.5 py-3 text-[10px] text-slate-400"
-						>
-							<div className="flex items-center gap-2">
-								<span className="rounded-md bg-slate-200 px-2 py-1 text-[9px] font-semibold">
-									Tahap {currentStage + index + 2} Terkunci
+					{(isRejected ? stages.slice(2) : stages.slice(currentStage + 1)).map((stage, index) => {
+						const stageIndex = isRejected ? index + 2 : currentStage + index + 1;
+						return (
+							<div
+								key={stage.title}
+								className={`flex items-center justify-between rounded-xl border ${
+									isRejected ? 'border-rose-200' : 'border-slate-200'
+								} ${stageIndex === 3 ? 'border-dashed' : ''} bg-slate-50/60 px-3.5 py-3 text-[11px] text-slate-500`}
+							>
+								<div className="flex items-center gap-2">
+									<span className="rounded-md bg-slate-200 px-2 py-1 text-[10px] font-semibold">
+										Tahap {stageIndex + 1} Terkunci
+									</span>
+									<span className="font-semibold text-slate-600">{stage.title}</span>
+								</div>
+								<span className="hidden items-center gap-1 sm:flex">
+									<i className="bi bi-unlock" aria-hidden="true"></i>
+									Menunggu Penyelesaian Catatan Tahap {stageIndex}
 								</span>
-								<span className="font-semibold text-slate-500">{stage.title}</span>
 							</div>
-							<span className="hidden items-center gap-1 sm:flex">
-								<i className="bi bi-lock" aria-hidden="true"></i>
-								Menunggu Penyelesaian Catatan Tahap {currentStage + index + 1}
-							</span>
-						</div>
-					))}
+						);
+					})}
 				</div>
 			</section>
 		</div>
 	);
+}
+
+function ProgressPanel({ report, currentStage, isRejected }) {
+	return (
+		<section className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 sm:p-3.5">
+			<h3 className="mb-2.5 border-b border-slate-200 pb-2 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
+				<i className="bi bi-link-45deg mr-1.5 text-sm" aria-hidden="true"></i>
+				Alur Prosedur &amp; Tahapan Penanganan BAP
+			</h3>
+			<div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+				{stages.map((stage, index) => {
+					const isRejectedStage = isRejected && index > 0;
+					const isDone = isRejected ? index === 0 : index < currentStage;
+					const isActive = !isRejected && !isDone && index === currentStage && currentStage < stages.length;
+					const className = isRejectedStage
+						? 'border-rose-300 bg-white text-rose-700'
+						: isActive
+							? 'border-sky-500 bg-white shadow-[0_0_0_1px_rgba(14,165,233,0.12)]'
+							: isDone
+								? 'border-emerald-200 bg-white'
+								: 'border-slate-200 bg-slate-50 text-slate-400';
+
+					return (
+						<div key={stage.title} className={`flex min-h-26.5 flex-col rounded-lg border p-2.5 ${className}`}>
+							<div className="mb-1.5 flex items-center justify-between">
+								<span className="text-[10px] font-bold uppercase tracking-wide">
+									Tahap {index + 1}{isActive ? ' •' : ''}
+								</span>
+								<span className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] ${
+									isRejectedStage
+										? 'bg-rose-100 text-rose-600'
+										: isDone
+											? 'bg-emerald-100 text-emerald-600'
+											: isActive
+												? 'bg-amber-100 text-amber-700'
+												: 'bg-slate-200 text-slate-500'
+								}`}>
+									{isRejectedStage
+										? <i className="bi bi-x-lg" aria-hidden="true"></i>
+										: isDone
+											? <i className="bi bi-check-lg" aria-hidden="true"></i>
+											: isActive
+												? <span className="h-1.5 w-1.5 rounded-full bg-sky-500"></span>
+												: index + 1}
+								</span>
+							</div>
+							<p className="text-[10px] font-bold">
+								{isRejected && index === 3 ? 'Selesai (Di Tolak)' : stage.title}
+							</p>
+							<p className="mt-1 text-[10px] leading-relaxed text-slate-500">{stage.description}</p>
+							<div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5 text-[10px]">
+								{isActive ? (
+									<span className="font-semibold text-sky-600">
+										<i className="bi bi-record-circle mr-1" aria-hidden="true"></i>
+										Sedang Proses
+									</span>
+								) : isDone || isRejectedStage ? (
+									<span className={isRejectedStage ? 'text-rose-600' : 'text-slate-400'}>
+										<i className="bi bi-calendar3 mr-1" aria-hidden="true"></i>
+										{report.waktu.split(',')[0]}
+									</span>
+								) : (
+									<span className="text-slate-400">Menunggu Tahap {index}</span>
+								)}
+								{(isActive || isDone || isRejectedStage) && (
+									<span className={`font-semibold ${isRejectedStage ? 'text-rose-600' : isActive ? 'text-[#0B3C65]' : 'text-slate-500'}`}>
+										{isActive ? 'Satgas' : isDone ? 'Satgas' : ''}
+									</span>
+								)}
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		</section>
+	);
+}
+
+function getVisibleHistory(report, currentStage, isRejected) {
+	const history = [...(report.history ?? [])];
+	const passedStages = isRejected
+		? [1]
+		: Array.from({ length: Math.max(0, currentStage - 1) }, (_, index) => index + 1);
+
+	passedStages.forEach((stage) => {
+		if (history.some((record) => record.stage === stage)) return;
+
+		const rejectedAtThisStage = isRejected && stage === 1;
+		history.push({
+			stage,
+			decision: rejectedAtThisStage ? 'reject' : 'continue',
+			note: rejectedAtThisStage
+				? report.catatan || ''
+				: '',
+			createdAt: '',
+			actor: '',
+			isPlaceholder: true,
+		});
+	});
+
+	return history.sort((first, second) => first.stage - second.stage);
+}
+
+function StagePanel({
+	stage,
+	title,
+	children,
+	onSave,
+	saveLabel = 'Simpan & Lanjutkan',
+	canSave = true,
+}) {
+	return (
+		<section className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm sm:p-4">
+			<div className="mb-3 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+				<span className="rounded-md bg-emerald-100 px-2 py-1 text-[10px] font-semibold text-emerald-700">
+					Tahap {stage + 1}
+				</span>
+				<h4 className="text-[11px] font-bold text-[#0B3C65]">{title}</h4>
+			</div>
+			{children}
+			<div className="mt-3 flex justify-end">
+				<button
+					type="button"
+					onClick={onSave}
+					disabled={!canSave}
+					className="rounded-lg bg-emerald-600 px-4 py-2 text-[10px] font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+				>
+					{saveLabel}
+					{saveLabel.includes('Lanjutkan') && (
+						<i className="bi bi-arrow-right ml-2" aria-hidden="true"></i>
+					)}
+				</button>
+			</div>
+		</section>
+	);
+}
+
+function StageNoteField({ label, value, onChange, placeholder, required = false }) {
+	return (
+		<label className="block">
+			<span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wide text-slate-600">
+				{label}{required && <span className="ml-1 text-rose-500">*</span>}
+			</span>
+			<textarea
+				value={value}
+				onChange={(event) => onChange(event.target.value)}
+				aria-label={label}
+				placeholder={placeholder}
+				required={required}
+				rows={3}
+				className="w-full resize-y rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-[10px] leading-relaxed text-slate-700 outline-none placeholder:text-slate-400 focus:border-sky-400"
+			/>
+		</label>
+	);
+}
+
+function HistoryRecord({ record }) {
+	const isRejected = record.decision === 'reject';
+	const title = isRejected
+		? 'Opsi: Laporan Ditolak'
+		: record.stage === 1
+			? 'Laporan Dilanjutkan / Terverifikasi'
+			: record.stage === 2
+				? 'Catatan Hasil Investigasi'
+				: 'Hasil Akhir Laporan';
+
+	return (
+		<article className="rounded-lg border border-slate-200 bg-slate-50/50 p-2.5">
+			<div className="mb-2 flex flex-wrap items-center justify-between gap-1.5">
+				<p className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600">
+					<span className={`h-1.5 w-1.5 rounded-full ${isRejected ? 'bg-rose-500' : 'bg-slate-400'}`}></span>
+					<span>Tahap {record.stage + 1} · {title}</span>
+				</p>
+				<div className="flex items-center gap-2 text-[10px] text-slate-500">
+					{record.createdAt && <span>{formatHistoryDate(record.createdAt)}</span>}
+					{record.createdAt && <span>·</span>}
+					{record.actor && <span>{record.actor}</span>}
+					<span className={`rounded-full px-1.5 py-0.5 ${isRejected ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-600'}`}>
+						{record.isPlaceholder ? 'Catatan lama' : isRejected ? 'Opsi Penolakan' : 'Terverifikasi'}
+					</span>
+				</div>
+			</div>
+			<div className={`rounded-md border border-slate-100 bg-white px-2.5 py-2 text-[11px] leading-relaxed ${
+				record.isPlaceholder ? 'text-slate-400' : 'text-slate-700'
+			} ${record.note && !record.isPlaceholder ? 'italic' : ''}`}>
+				{record.note || 'Catatan belum tersedia untuk tahap ini.'}
+			</div>
+			<p className={`mt-1.5 border-t border-slate-100 pt-1.5 text-[10px] ${isRejected ? 'text-rose-600' : 'text-slate-500'}`}>
+				{isRejected
+					? 'Tindak Lanjut: Laporan selesai dengan status ditolak'
+					: record.stage === 3
+						? 'Tindak Lanjut: Penanganan laporan telah selesai'
+						: 'Tindak Lanjut: Masuk ke tahap selanjutnya'}
+			</p>
+		</article>
+	);
+}
+
+function formatHistoryDate(value) {
+	return new Intl.DateTimeFormat('id-ID', {
+		dateStyle: 'medium',
+		timeStyle: 'short',
+	}).format(new Date(value));
 }
 
 function DecisionCard({
@@ -394,36 +568,38 @@ function DecisionCard({
 	onSelect,
 	onNoteChange,
 	nextStep,
+	actionLabel,
 }) {
 	const isContinue = variant === 'continue';
-
 	return (
 		<div className={`rounded-lg border p-2.5 ${
 			selected
 				? isContinue
-					? 'border-emerald-300 bg-emerald-50/40'
-					: 'border-rose-300 bg-rose-50/40'
-				: 'border-slate-200 bg-white'
+					? 'border-emerald-300 bg-emerald-50/30'
+					: 'border-rose-300 bg-rose-50/30'
+				: 'border-dashed border-slate-200 bg-slate-50/50'
 		}`}>
 			<div className="mb-2 flex items-center justify-between gap-2">
 				<button
 					type="button"
 					onClick={onSelect}
 					aria-pressed={selected}
-					className={`flex min-w-0 items-center gap-1.5 text-left text-[9px] font-semibold ${
-						isContinue ? 'text-slate-700' : 'text-slate-600'
+					className={`flex min-w-0 items-center gap-1.5 text-left text-[10px] font-bold ${
+						selected
+							? isContinue ? 'text-emerald-700' : 'text-rose-600'
+							: 'text-slate-600'
 					}`}
 				>
 					<span className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-						selected ? (isContinue ? 'bg-emerald-500' : 'bg-rose-500') : 'bg-slate-400'
+						selected
+							? isContinue ? 'bg-emerald-500' : 'bg-rose-500'
+							: 'bg-slate-400'
 					}`}></span>
 					{title}
 				</button>
-				<span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[7px] font-medium ${
+				<span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
 					selected
-						? isContinue
-							? 'bg-emerald-100 text-emerald-700'
-							: 'bg-rose-100 text-rose-700'
+						? isContinue ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'
 						: 'bg-slate-100 text-slate-500'
 				}`}>
 					{badge}
@@ -436,15 +612,19 @@ function DecisionCard({
 				aria-label={`Catatan ${isContinue ? 'laporan dilanjutkan' : 'penolakan'}`}
 				placeholder={placeholder}
 				rows={2}
-				className="w-full resize-none rounded-md border border-slate-100 bg-white px-2 py-2 text-[9px] italic text-slate-600 outline-none placeholder:text-slate-400 focus:border-sky-300"
+				className="w-full resize-none rounded-md border border-slate-100 bg-white px-2 py-2 text-[11px] italic text-slate-700 outline-none placeholder:text-slate-500 focus:border-sky-300"
 			/>
-			<p className={`mt-2 border-t pt-1.5 text-[8px] font-medium ${
-				isContinue ? 'border-emerald-100 text-emerald-700' : 'border-slate-100 text-slate-500'
+			<p className={`mt-2 border-t pt-1.5 text-[10px] font-medium ${
+				isContinue ? 'border-emerald-100 text-emerald-700' : 'border-rose-100 text-rose-600'
 			}`}>
 				{nextStep}
-				<span className={`float-right ${isContinue ? 'text-emerald-700' : 'text-rose-600'}`}>
-					{isContinue ? 'Pilih Verifikasi' : 'Pilih Ditolak'}
-				</span>
+				<button
+					type="button"
+					onClick={onSelect}
+					className="float-right font-semibold hover:underline"
+				>
+					{actionLabel} →
+				</button>
 			</p>
 		</div>
 	);
