@@ -30,7 +30,7 @@ const columns = () => [
                 <button aria-label="Lihat rekap" className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-[#0B3C65]">
                     <Icon name="eye" />
                 </button>
-                <button className="rounded-lg bg-[#0B3C65] px-3 py-2 text-[11px] font-semibold text-white hover:bg-[#092f50]">
+                <button className="flex items-center rounded-lg bg-[#0B3C65] px-3 py-2 text-[11px] font-semibold text-white hover:bg-[#092f50]">
                     <Icon name="download" className="mr-1" /> UNDUH
                 </button>
             </div>

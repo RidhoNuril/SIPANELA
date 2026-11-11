@@ -25,11 +25,14 @@ import {
 	Filter,
 	Info,
 	Inbox,
+	IdCard,
 	Link,
 	LayoutDashboard,
+	Mail,
 	MapPin,
 	Menu,
 	Pencil,
+	Phone,
 	Plus,
 	Power,
 	Search,
@@ -40,6 +43,7 @@ import {
 	Unlock,
 	UserRound,
 	X,
+	LogOut
 } from 'lucide-react';
 
 const iconComponents = {
@@ -86,6 +90,9 @@ const iconComponents = {
 	crosshair: Crosshair,
 	check: Check,
 	user: UserRound,
+	'id-card': IdCard,
+	mail: Mail,
+	telephone: Phone,
 	'eye-outline': Eye,
 	'eye-slash-outline': EyeOff,
 	power: Power,
@@ -95,6 +102,7 @@ const iconComponents = {
 	'circle-info-outline': Info,
 	'verified-badge': BadgeCheck,
 	'bell-outline': Bell,
+	'log-out': LogOut
 };
 
 export default function Icon({ name, ...props }) {

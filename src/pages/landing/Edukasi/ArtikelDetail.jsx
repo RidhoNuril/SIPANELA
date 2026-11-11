@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
+import Icon from '../../../components/common/Icon.jsx';
 
 const preventionPillars = [
     {
@@ -30,13 +31,13 @@ export default function ArtikelDetail() {
         <div className="flex min-h-screen flex-col bg-[#F1F6FA] text-[#102B49]">
             <Navbar activePage="Edukasi" />
 
-            <main className="w-full flex-1 px-5 pb-12 pt-7 sm:px-8 sm:pt-9">
+            <main className="w-full flex-1 px-6 pb-12 pt-7 sm:px-8 sm:pt-9">
                 <article className="mx-auto max-w-3xl">
                     <Link
                         to="/edukasi"
                         className="inline-flex items-center gap-2 text-xs font-medium text-[#42566C] transition-colors hover:text-[#0878B8]"
                     >
-                        <span aria-hidden="true">←</span>
+                        <Icon name="chevron-left" className="h-3 w-3" />
                         Kembali ke Beranda Edukasi
                     </Link>
 

@@ -872,7 +872,7 @@ function StepsSection() {
                                 Tulis Kronologi
                             </h4>
                             <p className="text-gray-600 text-xs leading-relaxed">
-                                Pilih kategori dugaan dan tuliskan fakta yang diketahui secara objektif tanpa mencantumkan nama Anda.
+                                Pilih kategori dugaan dan tuliskan fakta yang diketahui secara objektif.
                             </p>
                         </div>
 
@@ -893,10 +893,10 @@ function StepsSection() {
                                 Tahap 3
                             </span>
                             <h4 className="text-sm font-bold text-[#0B3C65] mt-2 mb-1">
-                                Simpan Kode Tiket
+                                Konfirmasi
                             </h4>
                             <p className="text-gray-600 text-xs leading-relaxed">
-                                Dapatkan ID laporan unik terenkripsi untuk memantau kemajuan tindak lanjut satgas kapan saja.
+                                Konfirmasi bahwa laporan yang anda lakukan bukan laporan palsu dan dapat dipertimbangkan kebenarannya.
                             </p>
                         </div>
                     </div>
@@ -904,7 +904,7 @@ function StepsSection() {
                     {/* Action Button */}
                     <div className="mt-10 text-center">
                         <Link to="/lapor" className="px-8 py-3.5 rounded-xl bg-[#0B3C65] hover:bg-[#093050] text-white font-medium text-sm inline-flex items-center gap-3 shadow-md transition-all">
-                            <span>Buka Formulir Pelaporan Publik</span>
+                            <span>Buka Formulir Pelaporan</span>
                         </Link>
                     </div>
                 </div>

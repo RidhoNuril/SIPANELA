@@ -7,7 +7,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F8FAFB] px-5 py-24 font-['Poppins'] text-[#111827]">
+        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F8FAFB] px-6 py-24 font-['Poppins'] text-[#111827]">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgba(22,126,184,0.52),transparent_25%),radial-gradient(ellipse_at_0%_100%,rgba(223,190,119,0.78),transparent_29%),linear-gradient(135deg,#f8fafb_15%,#edf3f5_52%,#ffffff_100%)]" />
             <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px]" />
 
@@ -63,14 +63,14 @@ export default function Login() {
                         </button>
                     </label>
 
-                    <button type="submit" className="h-12 w-full rounded-xl bg-[#0D416A] text-lg font-bold text-white transition-colors hover:bg-[#092F4D]">
+                    <button type="submit" className="h-12 w-full rounded-xl bg-[#0D416A] text-md sm:text-lg font-bold text-white transition-colors hover:bg-[#092F4D]">
                         Login
                     </button>
                 </form>
 
                 <p className="mt-4 text-center text-xs text-[#30343A]">
                     Tidak Punya akun ?{' '}
-                    <span className="font-bold text-black">Daftar</span>
+                    <Link to="/register" className="font-bold text-black hover:underline">Daftar</Link>
                 </p>
             </section>
         </main>

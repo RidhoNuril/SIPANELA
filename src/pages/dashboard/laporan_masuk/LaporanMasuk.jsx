@@ -242,7 +242,7 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 					/>
 
 					<section>
-						<h3 className="mb-2.5 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
+						<h3 className="flex items-center mb-2.5 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
 							<Icon name="clipboard2-check" className="mr-1.5 text-sm" />
 							Riwayat Catatan
 						</h3>
@@ -359,7 +359,7 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 function ProgressPanel({ report, currentStage, isRejected }) {
 	return (
 		<section className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 sm:p-3.5">
-			<h3 className="mb-2.5 border-b border-slate-200 pb-2 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
+			<h3 className="flex items-center mb-2.5 border-b border-slate-200 pb-2 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
 				<Icon name="link-45deg" className="mr-1.5 text-sm" />
 				Alur Prosedur &amp; Tahapan Penanganan BAP
 			</h3>
@@ -406,12 +406,12 @@ function ProgressPanel({ report, currentStage, isRejected }) {
 							<p className="mt-1 text-[10px] leading-relaxed text-slate-500">{stage.description}</p>
 							<div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5 text-[10px]">
 								{isActive ? (
-									<span className="font-semibold text-sky-600">
+									<span className="flex items-center font-semibold text-sky-600">
 										<Icon name="record-circle" className="mr-1" />
 										Sedang Proses
 									</span>
 								) : isDone || isRejectedStage ? (
-									<span className={isRejectedStage ? 'text-rose-600' : 'text-slate-400'}>
+									<span className={`flex items-center ${isRejectedStage ? 'text-rose-600' : 'text-slate-400'}`}>
 										<Icon name="calendar3" className="mr-1" />
 										{report.waktu.split(',')[0]}
 									</span>
@@ -479,7 +479,7 @@ function StagePanel({
 					type="button"
 					onClick={onSave}
 					disabled={!canSave}
-					className="rounded-lg bg-emerald-600 px-4 py-2 text-[10px] font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+					className="flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-[10px] font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{saveLabel}
 					{saveLabel.includes('Lanjutkan') && (

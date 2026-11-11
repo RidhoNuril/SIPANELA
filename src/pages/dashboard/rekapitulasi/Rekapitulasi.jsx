@@ -71,10 +71,10 @@ export default function Rekapitulasi() {
                         {field('Rentang Tanggal', range, setRange, ['12 Okt 2026 - 24 Okt 2024', '01 Okt 2026 - 31 Okt 2026'])}
                     </div>
                     <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 text-[10px] text-[#8292a5] sm:flex-row sm:items-center sm:justify-between">
-                        <span><Icon name="info-circle" className="mr-2 text-[#0B3C65]" />Menampilkan {filteredReports.length} arsip bundel resmi sesuai parameter filter aktif</span>
+                        <span className="flex items-center"><Icon name="info-circle" className="mr-2 text-[#0B3C65]" />Menampilkan {filteredReports.length} arsip bundel resmi sesuai parameter filter aktif</span>
                         <div className="flex items-center gap-4">
                             <button onClick={resetFilters} className="font-semibold text-[#53647a] hover:text-[#0B3C65]">Reset Filter</button>
-                            <button onClick={handleApplyFilter} className="rounded-lg bg-[#0B3C65] px-4 py-2 font-semibold text-white hover:bg-[#092f50]">
+                            <button onClick={handleApplyFilter} className="flex items-center rounded-lg bg-[#0B3C65] px-4 py-2 font-semibold text-white hover:bg-[#092f50]">
                                 <Icon name="filter" className="mr-1" /> Terapkan Filter
                             </button>
                         </div>
@@ -88,7 +88,7 @@ export default function Rekapitulasi() {
                             <h3 className="text-sm font-bold text-[#0B3C65]">Rekap Pelaporan Anti Narkoba</h3>
                             <p className="text-[10px] text-[#8292a5]">Daftar rekapitulasi berkas tersertifikasi digital siap unduh</p>
                         </div>
-                        <div className="text-xs font-semibold text-[#53647a]">
+                        <div className="flex items-center text-xs font-semibold text-[#53647a]">
                             Export Rekap <Icon name="download" className="ml-1" />
                         </div>
                     </div>
