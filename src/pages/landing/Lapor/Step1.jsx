@@ -1,3 +1,5 @@
+import Icon from '../../../components/common/Icon';
+
 const categories = [
     'Peredaran Narkotika',
     'Penyalahgunaan Narkotika',
@@ -90,9 +92,7 @@ export default function Step1({
                         className={`mt-2 flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed px-4 py-5 text-center transition-colors focus:outline-none focus:ring-2 focus:ring-[#168BCC]/30 sm:min-h-36 ${isDragging ? 'border-[#0B83C5] bg-[#EAF7FC]' : 'border-[#168BCC] bg-[#F9FCFE] hover:bg-[#F0F9FD]'}`}
                     >
                         <span className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#0B3C65] text-white">
-                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 16V8m0 0L9 11m3-3 3 3M7 16.5a4.5 4.5 0 0 1-.5-8.97A5.5 5.5 0 0 1 17 9a3.5 3.5 0 0 1 .5 6.97" />
-                            </svg>
+                            <Icon name="cloud-upload-outline" className="h-5 w-5" />
                         </span>
                         {selectedFile ? (
                             <span className="max-w-[90%] truncate text-sm text-[#172B45]">{selectedFile.name}</span>
@@ -106,10 +106,7 @@ export default function Step1({
                 </div>
 
                 <aside className="mt-5 flex min-h-16 items-start gap-3 border-l-4 border-[#0B3C65] bg-[#F7F9FB] px-4 py-3">
-                    <svg className="mt-0.5 h-5 w-5 shrink-0 text-[#0B3C65]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true">
-                        <circle cx="12" cy="12" r="9" />
-                        <path strokeLinecap="round" d="M12 11v5m0-8h.01" />
-                    </svg>
+                    <Icon name="info-circle-outline" className="mt-0.5 h-5 w-5 shrink-0 text-[#0B3C65]" />
                     <p className="text-xs leading-relaxed text-[#52657C]">
                         <strong className="mb-0.5 block text-sm text-[#172B45]">Penting demi keselamatan Anda:</strong>
                         Jangan mengambil gambar atau mengumpulkan bukti apabila situasi membahayakan fisik Anda. Keselamatan diri Anda adalah prioritas utama kami.
@@ -122,9 +119,7 @@ export default function Step1({
                     </button>
                     <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-[#0B3C65] px-4 py-2.5 text-sm font-medium text-white shadow-[0_2px_4px_rgba(11,60,101,0.22)] transition-colors hover:bg-[#082F50]">
                         Selanjutnya: Tentukan Lokasi
-                        <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fillRule="evenodd" d="M3.5 10a.75.75 0 0 1 .75-.75h10.19L11.22 6.03a.75.75 0 1 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 1 1-1.06-1.06l3.22-3.22H4.25A.75.75 0 0 1 3.5 10Z" clipRule="evenodd" />
-                        </svg>
+                        <Icon name="arrow-right-long" className="h-4 w-4" />
                     </button>
                 </div>
             </form>

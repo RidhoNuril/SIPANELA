@@ -4,6 +4,7 @@ import DataTable from '../../../components/common/DataTable';
 import KelolaArtikelColumns from './KelolaArtikelColumns';
 import { Link } from 'react-router-dom';
 import { initialArtikel } from './KelolaArtikelColumns';
+import Icon from '../../../components/common/Icon';
 
 
 export default function KelolaArtikel() {
@@ -27,8 +28,8 @@ export default function KelolaArtikel() {
 					<h2 className="text-2xl font-bold text-[#0B3C65] tracking-tight">Kelola Artikel</h2>
 					<p className="text-sm text-gray-500 mt-1">Pengelolaan artikel edukasi di lingkungan kampus.</p>
 				</div>
-					<Link to="/dashboard/artikel/tambah" className="px-4 py-3 bg-[#0B3C65] text-white rounded-xl text-sm font-medium hover:bg-[#0A2E4D] transition-colors">
-						<i className="bi bi-plus-lg me-2"></i> Tambah Artikel Baru
+					<Link to="/dashboard/artikel/tambah" className="flex items-center px-4 py-3 bg-[#0B3C65] text-white rounded-xl text-sm font-medium hover:bg-[#0A2E4D] transition-colors">
+						<Icon name="plus-lg" className="me-2" /> Tambah Artikel Baru
 					</Link>
 			</div>
 
@@ -39,7 +40,7 @@ export default function KelolaArtikel() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">TOTAL ARTIKEL TERBIT</span>
 							<div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-								<i className="bi bi-box-arrow-in-down"></i>
+								<Icon name="box-arrow-in-down" />
 							</div>
 						</div>
 						<div className="mt-6">
@@ -52,7 +53,7 @@ export default function KelolaArtikel() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">DRAF ARTIKEL</span>
 							<div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
-								<i className="bi bi-check-circle-fill"></i>
+								<Icon name="check-circle-fill" />
 							</div>
 						</div>
 						<div className="mt-6">
@@ -65,7 +66,7 @@ export default function KelolaArtikel() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">KATEGORI EDUKASI</span>
 							<div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-								<i className="bi bi-exclamation-triangle-fill"></i>
+								<Icon name="exclamation-triangle-fill" />
 							</div>
 						</div>
 						<div className="mt-6">

@@ -1,6 +1,7 @@
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import { Link } from 'react-router-dom';
+import Icon from '../../../components/common/Icon';
 
 const articles = [
     {
@@ -63,10 +64,7 @@ function ArticleCard({ article }) {
             <div className="flex flex-1 flex-col px-4 pb-4 pt-3">
                 <div className="flex items-center gap-2 text-[10px] text-[#64748B]">
                     <span className="inline-flex items-center gap-1">
-                        <svg className="h-3 w-3" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                            <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.5" />
-                            <path d="M10 6v4l2.5 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        </svg>
+                        <Icon name="clock" className="h-3 w-3" />
                         {article.readTime}
                     </span>
                     <span aria-hidden="true">•</span>

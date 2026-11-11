@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/common/Footer.jsx';
 import Navbar from '../../components/common/Navbar.jsx';
+import Icon from '../../components/common/Icon';
 
 const heroImages = [
     {
@@ -46,18 +47,14 @@ function HeroSection({ heroImages, activeImage, changeImage }) {
                     className="absolute sm:left-4 left-2 z-20 w-10 h-10 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-md flex items-center justify-center text-white transition-all shadow-lg"
                     aria-label="Foto sebelumnya"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+                    <Icon name="arrow-left-outline" className="w-5 h-5" />
                 </button>
                 <button
                     onClick={() => changeImage('right')}
                     className="absolute sm:right-4 right-2 z-20 w-10 h-10 rounded-full bg-white/20 hover:bg-white/35 backdrop-blur-md flex items-center justify-center text-white transition-all shadow-lg"
                     aria-label="Foto berikutnya"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                    <Icon name="arrow-right-outline" className="w-5 h-5" />
                 </button>
 
                 {/* Content */}
@@ -71,14 +68,10 @@ function HeroSection({ heroImages, activeImage, changeImage }) {
                     <div className="flex flex-wrap items-center gap-4">
                         <Link to="/lapor" className="px-6 py-3 rounded-xl bg-[#27AED2] hover:bg-[#1A9CC8] text-white font-medium text-sm flex items-center gap-2 shadow-lg transition-all">
                             <span>Buat Laporan</span>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                            <Icon name="arrow-right-outline" className="w-4 h-4" />
                         </Link>
                         <a href="/#edukasi" className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white font-medium text-sm flex items-center gap-2 transition-all">
-                            <svg className="w-4 h-4 text-[#27AED2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                            </svg>
+                            <Icon name="book-open" className="w-4 h-4 text-[#27AED2]" />
                             <span>Jelajahi Edukasi</span>
                         </a>
                     </div>
@@ -109,9 +102,7 @@ function LandasanHukumSection() {
                                 UU No. 35 Th 2009
                             </span>
                             <div className="w-8 h-8 rounded-xl bg-[#AFE4F6]/50 flex items-center justify-center text-[#0B3C65]">
-                                <svg className="w-4 h-4 text-[#1A9CC8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
+                                <Icon name="shield-check" className="w-4 h-4 text-[#1A9CC8]" />
                             </div>
                         </div>
                         <h3 className="text-lg font-bold text-[#0B3C65] mb-1">
@@ -134,9 +125,7 @@ function LandasanHukumSection() {
                                 UU No. 31 Th 2014
                             </span>
                             <div className="w-8 h-8 rounded-xl bg-[#AFE4F6]/50 flex items-center justify-center text-[#0B3C65]">
-                                <svg className="w-4 h-4 text-[#1A9CC8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
+                                <Icon name="shield-check" className="w-4 h-4 text-[#1A9CC8]" />
                             </div>
                         </div>
                         <h3 className="text-lg font-bold text-[#0B3C65] mb-1">
@@ -159,9 +148,7 @@ function LandasanHukumSection() {
                                 Inpres No. 2 Th 2020
                             </span>
                             <div className="w-8 h-8 rounded-xl bg-[#AFE4F6]/50 flex items-center justify-center text-[#0B3C65]">
-                                <svg className="w-4 h-4 text-[#1A9CC8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg>
+                                <Icon name="shield-check" className="w-4 h-4 text-[#1A9CC8]" />
                             </div>
                         </div>
                         <h3 className="text-lg font-bold text-[#0B3C65] mb-1">

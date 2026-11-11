@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import DashboardLayout from '../../components/common/DashboardLayout';
+import Icon from '../../components/common/Icon';
 
 const dashboardData = {
 	'Mingguan': {
@@ -79,7 +80,7 @@ function Dashboard() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">TOTAL LAPORAN MASUK</span>
 							<div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-								<i className="bi bi-box-arrow-in-down"></i>
+								<Icon name="box-arrow-in-down" />
 							</div>
 						</div>
 						<div className="mt-6">
@@ -92,7 +93,7 @@ function Dashboard() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">TOTAL LAPORAN SELESAI</span>
 							<div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
-								<i className="bi bi-check-circle-fill"></i>
+								<Icon name="check-circle-fill" />
 							</div>
 						</div>
 						<div className="mt-6">
@@ -105,7 +106,7 @@ function Dashboard() {
 						<div className="flex justify-between items-start">
 							<span className="text-xs font-bold text-gray-400 tracking-wider">TOTAL KESELURUHAN LAPORAN</span>
 							<div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-								<i className="bi bi-exclamation-triangle-fill"></i>
+								<Icon name="exclamation-triangle-fill" />
 							</div>
 						</div>
 						<div className="mt-6">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DashboardLayout from '../../../components/common/DashboardLayout';
+import Icon from '../../../components/common/Icon';
 import { initialKategori } from './KelolaKategoriColumns';
 
 export default function FormKategori({ mode = 'create', initialValues = {} }) {
@@ -63,7 +64,7 @@ export default function FormKategori({ mode = 'create', initialValues = {} }) {
 					</p>
 
 					<div className="mt-6 flex gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm">
-						<i className="bi bi-info-circle mt-0.5 text-lg text-sky-600" aria-hidden="true"></i>
+						<Icon name="info-circle" className="mt-0.5 text-lg text-sky-600" />
 						<div>
 							<p className="font-semibold text-[#0B3C65]">Catatan Kategori:</p>
 							<p className="mt-0.5 max-w-2xl text-xs leading-5 text-slate-500">

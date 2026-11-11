@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DashboardLayout from '../../../components/common/DashboardLayout';
+import Icon from '../../../components/common/Icon';
 import { initialArtikel } from './KelolaArtikelColumns';
 
 const categories = ['Siaran Pers BNN', 'Edukasi Narkotika', 'Sosialisasi Kampus', 'Hukum Kampus'];
@@ -119,7 +120,7 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 									className="mt-3 flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-sky-300 bg-slate-50 px-4 py-4 text-center transition hover:bg-sky-50"
 								>
 									<span className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-lg text-sky-700">
-										<i className="bi bi-cloud-arrow-up" aria-hidden="true"></i>
+										<Icon name="cloud-arrow-up" />
 									</span>
 									<span className="text-xs font-semibold text-[#0B3C65]">
 										{thumbnail?.name ?? (isEditing ? 'Ganti thumbnail (opsional)' : 'Tarik berkas ke sini, atau telusuri')}

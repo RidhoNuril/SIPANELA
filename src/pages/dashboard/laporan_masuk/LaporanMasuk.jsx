@@ -2,6 +2,7 @@
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import LaporanMasukColumns from './LaporanMasukColumns';
+import Icon from '../../../components/common/Icon';
 
 const initialLaporan = [
 	{
@@ -229,7 +230,7 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 						aria-label="Tutup overlay verifikasi"
 						className="ml-3 rounded-md p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
 					>
-						<i className="bi bi-x-lg text-xs" aria-hidden="true"></i>
+						<Icon name="x-lg" className="text-xs" />
 					</button>
 				</header>
 
@@ -242,7 +243,7 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 
 					<section>
 						<h3 className="mb-2.5 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
-							<i className="bi bi-clipboard2-check mr-1.5 text-sm" aria-hidden="true"></i>
+							<Icon name="clipboard2-check" className="mr-1.5 text-sm" />
 							Riwayat Catatan
 						</h3>
 						<div className="space-y-2.5 rounded-xl border border-slate-200 p-3.5 sm:p-4">
@@ -343,7 +344,7 @@ function VerifikasiOverlay({ report, onClose, onSave }) {
 									<span className="font-semibold text-slate-600">{stage.title}</span>
 								</div>
 								<span className="hidden items-center gap-1 sm:flex">
-									<i className="bi bi-unlock" aria-hidden="true"></i>
+									<Icon name="unlock" />
 									Menunggu Penyelesaian Catatan Tahap {stageIndex}
 								</span>
 							</div>
@@ -359,7 +360,7 @@ function ProgressPanel({ report, currentStage, isRejected }) {
 	return (
 		<section className="rounded-xl border border-slate-200 bg-slate-50/60 p-3 sm:p-3.5">
 			<h3 className="mb-2.5 border-b border-slate-200 pb-2 text-[11px] font-bold uppercase tracking-wide text-[#0B3C65]">
-				<i className="bi bi-link-45deg mr-1.5 text-sm" aria-hidden="true"></i>
+				<Icon name="link-45deg" className="mr-1.5 text-sm" />
 				Alur Prosedur &amp; Tahapan Penanganan BAP
 			</h3>
 			<div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -391,9 +392,9 @@ function ProgressPanel({ report, currentStage, isRejected }) {
 												: 'bg-slate-200 text-slate-500'
 								}`}>
 									{isRejectedStage
-										? <i className="bi bi-x-lg" aria-hidden="true"></i>
+										? <Icon name="x-lg" />
 										: isDone
-											? <i className="bi bi-check-lg" aria-hidden="true"></i>
+											? <Icon name="check-lg" />
 											: isActive
 												? <span className="h-1.5 w-1.5 rounded-full bg-sky-500"></span>
 												: index + 1}
@@ -406,12 +407,12 @@ function ProgressPanel({ report, currentStage, isRejected }) {
 							<div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-1.5 text-[10px]">
 								{isActive ? (
 									<span className="font-semibold text-sky-600">
-										<i className="bi bi-record-circle mr-1" aria-hidden="true"></i>
+										<Icon name="record-circle" className="mr-1" />
 										Sedang Proses
 									</span>
 								) : isDone || isRejectedStage ? (
 									<span className={isRejectedStage ? 'text-rose-600' : 'text-slate-400'}>
-										<i className="bi bi-calendar3 mr-1" aria-hidden="true"></i>
+										<Icon name="calendar3" className="mr-1" />
 										{report.waktu.split(',')[0]}
 									</span>
 								) : (
@@ -482,7 +483,7 @@ function StagePanel({
 				>
 					{saveLabel}
 					{saveLabel.includes('Lanjutkan') && (
-						<i className="bi bi-arrow-right ml-2" aria-hidden="true"></i>
+						<Icon name="arrow-right" className="ml-2" />
 					)}
 				</button>
 			</div>

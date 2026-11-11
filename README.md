@@ -27,7 +27,7 @@ SIPANELA adalah aplikasi web untuk pelaporan dan pemantauan penanganan kasus ter
 - React Router 7 untuk navigasi sisi klien.
 - Tailwind CSS 4 melalui plugin Vite.
 - TanStack React Table untuk tabel data dan pagination.
-- Bootstrap Icons untuk ikon.
+- Lucide React untuk ikon antarmuka.
 - Poppins sebagai font antarmuka lokal.
 - Oxlint untuk linting.
 

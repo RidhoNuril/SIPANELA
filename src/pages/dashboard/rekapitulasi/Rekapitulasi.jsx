@@ -2,6 +2,7 @@
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import RekapitulasiColumns from './RekapitulasiColumns';
+import Icon from '../../../components/common/Icon';
 
 const allReports = [
     { period: 'Maret 2026', year: 'Tahun 2026', month: 'Oktober', status: 'Terkini & Berjalan', cases: '982 Aduan Terverifikasi', size: '3,4 MB', note: 'Diperbarui 3 jam lalu' },
@@ -51,7 +52,7 @@ export default function Rekapitulasi() {
                 <select value={value} onChange={(event) => setter(event.target.value)} className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs text-[#53647a] outline-none focus:border-[#0B3C65]">
                     {options.map((option) => <option key={option}>{option}</option>)}
                 </select>
-                <i className="bi bi-chevron-down pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400" />
+                <Icon name="chevron-down" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-slate-400" />
             </div>
         </label>
     );
@@ -70,11 +71,11 @@ export default function Rekapitulasi() {
                         {field('Rentang Tanggal', range, setRange, ['12 Okt 2026 - 24 Okt 2024', '01 Okt 2026 - 31 Okt 2026'])}
                     </div>
                     <div className="mt-5 flex flex-col gap-3 border-t border-slate-100 pt-4 text-[10px] text-[#8292a5] sm:flex-row sm:items-center sm:justify-between">
-                        <span><i className="bi bi-info-circle mr-2 text-[#0B3C65]" />Menampilkan {filteredReports.length} arsip bundel resmi sesuai parameter filter aktif</span>
+                        <span><Icon name="info-circle" className="mr-2 text-[#0B3C65]" />Menampilkan {filteredReports.length} arsip bundel resmi sesuai parameter filter aktif</span>
                         <div className="flex items-center gap-4">
                             <button onClick={resetFilters} className="font-semibold text-[#53647a] hover:text-[#0B3C65]">Reset Filter</button>
                             <button onClick={handleApplyFilter} className="rounded-lg bg-[#0B3C65] px-4 py-2 font-semibold text-white hover:bg-[#092f50]">
-                                <i className="bi bi-filter mr-1" /> Terapkan Filter
+                                <Icon name="filter" className="mr-1" /> Terapkan Filter
                             </button>
                         </div>
                     </div>
@@ -88,7 +89,7 @@ export default function Rekapitulasi() {
                             <p className="text-[10px] text-[#8292a5]">Daftar rekapitulasi berkas tersertifikasi digital siap unduh</p>
                         </div>
                         <div className="text-xs font-semibold text-[#53647a]">
-                            Export Rekap <i className="bi bi-download ml-1" />
+                            Export Rekap <Icon name="download" className="ml-1" />
                         </div>
                     </div>
                     <DataTable data={filteredReports} columns={columns} initialPageSize={5} infoLabel="arsip" />

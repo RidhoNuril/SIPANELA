@@ -1,3 +1,5 @@
+import Icon from '../../../components/common/Icon';
+
 const columns = (onVerify) => [
 	{
 		accessorKey: 'idTiket',
@@ -19,7 +21,7 @@ const columns = (onVerify) => [
 		header: 'LOKASI KEJADIAN (KAMPUS)',
 		cell: (info) => (
 			<div className="text-gray-600 flex items-center space-x-1.5">
-				<i className="bi bi-geo-alt text-gray-400 text-base shrink-0"></i>
+				<Icon name="geo-alt" className="text-gray-400 text-base shrink-0" />
 				<span className="leading-tight">{info.getValue()}</span>
 			</div>
 		),

@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from '../../assets/logo_sipanela.svg';
+import Icon from './Icon';
 
 const menuItems = [
 	{
 		title: 'Menu Utama',
 		links: [
-			{ to: '/dashboard', label: 'Dashboard', icon: 'bi-grid-3x3-gap-fill' },
-			{ to: '/dashboard/laporan', label: 'Laporan Masuk', icon: 'bi-file-earmark-text' },
-			{ to: '/dashboard/rekapitulasi', label: 'Rekapitulasi', icon: 'bi-bar-chart-line-fill' },
+			{ to: '/dashboard', label: 'Dashboard', icon: 'grid-3x3-gap-fill' },
+			{ to: '/dashboard/laporan', label: 'Laporan Masuk', icon: 'file-earmark-text' },
+			{ to: '/dashboard/rekapitulasi', label: 'Rekapitulasi', icon: 'bar-chart-line-fill' },
 		]
 	},
 	{
 		title: 'Menu Artikel',
 		links: [
-			{ to: '/dashboard/kategori', label: 'Kelola Kategori', icon: 'bi-tags-fill' },
-			{ to: '/dashboard/artikel', label: 'Kelola Artikel', icon: 'bi-file-earmark-post-fill' },
+			{ to: '/dashboard/kategori', label: 'Kelola Kategori', icon: 'tags-fill' },
+			{ to: '/dashboard/artikel', label: 'Kelola Artikel', icon: 'file-earmark-post-fill' },
 		]
 	}
 ];
@@ -36,9 +37,9 @@ export default function Sidebar() {
 				onClick={() => setIsOpen(!isOpen)}
 			>
 				{isOpen ? (
-					<i className="bi bi-x text-2xl hover:text-[#0B3C65]"></i>
+					<Icon name="x" className="text-2xl hover:text-[#0B3C65]" />
 				) : (
-					<i className="bi bi-list text-2xl hover:text-[#0B3C65]"></i>
+					<Icon name="list" className="text-2xl hover:text-[#0B3C65]" />
 				)}
 			</button>
 
@@ -75,7 +76,7 @@ export default function Sidebar() {
 												: 'text-gray-600 hover:bg-[#0B3C65] hover:text-white transition-colors'
 											}`}
 									>
-										<i className={`bi ${link.icon} text-sm mr-3`}></i>
+										<Icon name={link.icon} className="text-sm mr-3" />
 										{link.label}
 									</Link>
 								))}

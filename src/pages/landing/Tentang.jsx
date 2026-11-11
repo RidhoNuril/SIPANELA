@@ -1,5 +1,6 @@
 import Footer from '../../components/common/Footer.jsx';
 import Navbar from '../../components/common/Navbar.jsx';
+import Icon from '../../components/common/Icon';
 
 const leaders = [
     {
@@ -95,10 +96,7 @@ export default function Tentang() {
                             <div className="absolute right-0 top-0 h-16 w-16 rounded-bl-2xl bg-[#0B3C65]/4" />
                             <div className="relative">
                                 <span className="flex h-9 w-9 items-center justify-center rounded-md bg-[#E4EBF0] text-[#0B3C65]">
-                                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-                                        <circle cx="12" cy="12" r="2.5" />
-                                    </svg>
+                                    <Icon name="eye-outline" className="h-5 w-5" />
                                 </span>
                                 <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#71849B]">Pedoman Utama</p>
                                 <h2 className="mt-1 text-2xl font-extrabold text-[#0B3C65]">VISI</h2>
@@ -115,9 +113,7 @@ export default function Tentang() {
                             <div className="absolute right-0 top-0 h-16 w-16 rounded-bl-2xl bg-black/10" />
                             <div className="relative">
                                 <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white/15">
-                                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v9m5.2-6.2a7.5 7.5 0 1 1-10.4 0M7 20h10" />
-                                    </svg>
+                                    <Icon name="power" className="h-5 w-5" />
                                 </span>
                                 <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-[#B7CADA]">Misi Operasional</p>
                                 <h2 className="mt-1 text-2xl font-extrabold">MISI</h2>

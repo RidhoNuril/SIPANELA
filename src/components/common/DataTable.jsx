@@ -6,6 +6,7 @@ import {
 	getPaginationRowModel,
 	useReactTable
 } from '@tanstack/react-table';
+import Icon from './Icon';
 
 export default function DataTable({
 	data,
@@ -85,7 +86,7 @@ export default function DataTable({
 				{searchPlaceholder && (
 					<div className="relative w-full md:w-80 mb-5">
 						<span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-							<i className="bi bi-search text-sm"></i>
+							<Icon name="search" className="text-sm" />
 						</span>
 						<input
 							type="text"
@@ -156,7 +157,7 @@ export default function DataTable({
 							disabled={!table.getCanPreviousPage()}
 							className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
 						>
-							<i className="bi bi-chevron-left text-xs"></i>
+							<Icon name="chevron-left" className="text-xs" />
 						</button>
 						{ visiblePageNumbers.map((page, index) => (
                             <div key={page}>
@@ -176,7 +177,7 @@ export default function DataTable({
 							disabled={!table.getCanNextPage()}
 							className="w-8 h-8 rounded-lg border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
 						>
-							<i className="bi bi-chevron-right text-xs"></i>
+							<Icon name="chevron-right" className="text-xs" />
 						</button>
 					</div>
 				</div>

@@ -1,3 +1,5 @@
+import Icon from '../../../components/common/Icon';
+
 export default function Step2({
     zone,
     setZone,
@@ -67,18 +69,11 @@ export default function Step2({
                 <div className="mt-4">
                     <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                         <h2 className="flex items-center gap-1.5 text-xs font-semibold text-[#172B45]">
-                            <svg className="h-3.5 w-3.5 text-[#08A5CF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
-                                <circle cx="12" cy="10" r="2.5" />
-                            </svg>
+                            <Icon name="location-pin-outline" className="h-3.5 w-3.5 text-[#08A5CF]" />
                             Simulasi Peta Kampus &amp; Pin Titik Koordinat
                         </h2>
                         <button type="button" onClick={locateCurrentPosition} className="inline-flex items-center gap-1 rounded-md border border-[#A5E8F6] bg-[#F0FCFF] px-2 py-1 text-xs font-medium text-[#075985] hover:bg-[#DFF7FD]">
-                            <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-                                <path strokeLinecap="round" d="M12 2v3m0 14v3M2 12h3m14 0h3" />
-                                <circle cx="12" cy="12" r="6" />
-                                <circle cx="12" cy="12" r="2" />
-                            </svg>
+                            <Icon name="crosshair" className="h-3 w-3" />
                             Gunakan Pin Lokasi Saat Ini
                         </button>
                     </div>

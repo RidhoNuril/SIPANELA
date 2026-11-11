@@ -1,3 +1,5 @@
+import Icon from '../../../components/common/Icon';
+
 const columns = () => [
     {
         accessorKey: 'period',
@@ -5,7 +7,7 @@ const columns = () => [
         cell: ({ row }) => (
             <div className="flex items-start gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eef3f8] text-[#334b63]">
-                    <i className="bi bi-file-earmark-text-fill" />
+                    <Icon name="file-earmark-text-fill" />
                 </span>
                 <div>
                     <div className="flex items-center gap-2 font-semibold text-[#26384c]">
@@ -26,10 +28,10 @@ const columns = () => [
         cell: () => (
             <div className="flex justify-end gap-2">
                 <button aria-label="Lihat rekap" className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-[#0B3C65]">
-                    <i className="bi bi-eye" />
+                    <Icon name="eye" />
                 </button>
                 <button className="rounded-lg bg-[#0B3C65] px-3 py-2 text-[11px] font-semibold text-white hover:bg-[#092f50]">
-                    <i className="bi bi-download mr-1" /> UNDUH
+                    <Icon name="download" className="mr-1" /> UNDUH
                 </button>
             </div>
         )

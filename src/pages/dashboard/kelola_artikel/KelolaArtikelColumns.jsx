@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Icon from '../../../components/common/Icon';
 
 const sampleImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYuvu6u84ttDqor0c_a4Y1csRVKly_CFsBrnKCFeaXpQ&s=10';
 
@@ -121,10 +122,10 @@ const columns = () => [
 					title="Edit artikel"
 					className="px-2.5 py-1 text-slate-600 hover:text-[#0B3C65]"
 				>
-					<i className="bi bi-pencil"></i>
+					<Icon name="pencil" />
 				</Link>
 				<button className="px-2.5 py-1">
-					<i className="bi bi-trash"></i>
+					<Icon name="trash" />
 				</button>
 			</div>
 		),
