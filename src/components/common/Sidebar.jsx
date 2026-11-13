@@ -54,13 +54,13 @@ export default function Sidebar() {
 			<aside className={`fixed sm:static min-h-screen inset-y-0 top-0 left-0 z-40 w-72 bg-white border-r border-gray-100 p-4 flex flex-col justify-between shrink-0 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}>
 				<div className="space-y-8">
 					{/* Logo Section */}
-					<div className="flex items-center space-x-3 mb-8 px-2">
+					<Link to="/" className="flex items-center space-x-3 mb-8 px-2">
 						<img src={Logo} alt="Logo" className="w-10 h-10" />
 						<div>
 							<h1 className="font-bold text-[#0B3C65] text-lg tracking-tight leading-none">SIPANELA</h1>
 							<p className="text-[10px] uppercase font-semibold text-gray-400 tracking-wider mt-0.5">Politeknik Negeri Lampung</p>
 						</div>
-					</div>
+					</Link>
 
 					{/* Menus Loop */}
 					{menuItems.map((section, idx) => (
