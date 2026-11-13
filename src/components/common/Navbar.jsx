@@ -162,7 +162,7 @@ export default function Navbar({ activePage, reporter = false }) {
 
             {/* Menu Dropdown Mobile (Drawer) */}
             {isMobileMenuOpen && (
-                <div className="border-b border-gray-200 bg-white px-6 py-4 md:hidden shadow-lg">
+                <div className="w-full absolute top-full left-0 border-b border-gray-200 bg-white px-6 py-4 md:hidden shadow-lg">
                     <nav className="flex flex-col space-y-3">
                         {navItems.map((item) => {
                             const path = 
