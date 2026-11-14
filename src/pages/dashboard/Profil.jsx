@@ -1,16 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/common/DashboardLayout';
 import Icon from '../../components/common/Icon';
-
-const initialProfile = {
-	nama: 'Admin, S.Kom., M.T.I.',
-	nip: '19880412 201503 1 002',
-	unit: 'Satgas Anti Narkoba - POLINELA',
-	email: 'satgas.antinarkoba@polinela.ac.id',
-	whatsapp: '+62 812-7890-1122',
-	kontakDarurat: 'Posko Induk Keamanan (Ext. 1109)',
-	deskripsi: 'Bertanggung jawab sebagai koordinator lapangan investigasi dugaan penyalahgunaan zat adiktif, pelaksanaan verifikasi lapangan, pendampingan saksi pelapor anonim, serta koordinasi rujukan.',
-};
+import { getProfile, INITIAL_PROFILE } from '../../services/userService.js';
 
 function Toggle({ label, description, checked, onChange }) {
 	return (
@@ -34,10 +25,16 @@ function Toggle({ label, description, checked, onChange }) {
 }
 
 export default function Profil() {
-	const [profile, setProfile] = useState(initialProfile);
+	const [profile, setProfile] = useState(INITIAL_PROFILE);
 	const [smsEnabled, setSmsEnabled] = useState(false);
 	const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 	const [message, setMessage] = useState('');
+
+	useEffect(() => {
+		getProfile()
+			.then(setProfile)
+			.catch((error) => console.error('Gagal memuat profil.', error));
+	}, []);
 
 	function updateField(event) {
 		const { name, value } = event.target;
@@ -46,7 +43,7 @@ export default function Profil() {
 	}
 
 	function cancelChanges() {
-		setProfile(initialProfile);
+		setProfile(INITIAL_PROFILE);
 		setSmsEnabled(false);
 		setTwoFactorEnabled(false);
 		setMessage('');

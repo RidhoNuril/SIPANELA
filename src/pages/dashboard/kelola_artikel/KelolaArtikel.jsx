@@ -1,22 +1,36 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import KelolaArtikelColumns from './KelolaArtikelColumns';
 import { Link } from 'react-router-dom';
-import { initialArtikel } from './KelolaArtikelColumns';
 import Icon from '../../../components/common/Icon';
-
+import {
+	ARTICLE_FILTER_CATEGORIES,
+	getArticleFilterCategories,
+	getArticles,
+	INITIAL_ARTICLES,
+} from '../../../services/articleService.js';
 
 export default function KelolaArtikel() {
 	const [activeCategory, setActiveCategory] = useState('Semua Artikel');
-	const categories = ['Semua Artikel', 'Siaran Pers BNN', 'Edukasi Narkotika', 'Sosialisasi Kampus', 'Draf'];
+	const [articles, setArticles] = useState(INITIAL_ARTICLES);
+	const [categories, setCategories] = useState(ARTICLE_FILTER_CATEGORIES);
+
+	useEffect(() => {
+		Promise.all([getArticles(), getArticleFilterCategories()])
+			.then(([articleList, articleCategories]) => {
+				setArticles(articleList);
+				setCategories(articleCategories);
+			})
+			.catch((error) => console.error('Gagal memuat daftar artikel.', error));
+	}, []);
 
 	const filteredData = useMemo(() => {
 		if (activeCategory === 'Semua Artikel') {
-			return initialArtikel;
+			return articles;
 		}
-		return initialArtikel.filter((item) => item.kategori === activeCategory);
-	}, [activeCategory]);
+		return articles.filter((item) => item.kategori === activeCategory);
+	}, [activeCategory, articles]);
 
 	const columns = useMemo(() => KelolaArtikelColumns(filteredData), [filteredData]);
 

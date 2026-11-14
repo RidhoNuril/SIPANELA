@@ -1,45 +1,10 @@
+import { useEffect, useState } from 'react';
 import Footer from '../../components/common/Footer.jsx';
 import Navbar from '../../components/common/Navbar.jsx';
 import Icon from '../../components/common/Icon';
+import { getOrganization, ORGANIZATION } from '../../services/organizationService.js';
 
-const leaders = [
-    {
-        name: 'Prof. Novita Tresiana, S.Sos., M.Si.',
-        role: 'Penanggung Jawab Satgas P4GN POLINELA',
-        image: 47
-    },
-    {
-        name: 'Indrayati Putri Idrus, S.H., M.H.',
-        role: 'Koordinator Regulasi & Penindakan Hukum',
-        image: 44
-    },
-    {
-        name: 'Eko Budi Sulistio, S.Sos., M.Ap.',
-        role: 'Manajemen Administrasi & Pelaporan Terpadu',
-        image: 12
-    }
-];
-
-const members = [
-    { name: 'Rengga Fransseda, A.Md.', role: 'Logistik & Operasional Lapangan', image: 13 },
-    { name: 'Muhammad Ubaidillah', role: 'Edukasi Mahasiswa & Kampanye Kreatif', image: 14 },
-    { name: 'Ahmad Suntara, S.Kom.', role: 'Infrastruktur SIPANELA & Data Keamanan', image: 15 },
-    { name: 'Yusrizal, S.P., MM.', role: 'Koordinasi Antar Jurusan & Ormawa', image: 16 },
-    { name: 'M. Yhoga Ismail Ibn Ibrahim, M.T.I.', role: 'Analisis Siber & Pengaduan Anonim', image: 18 },
-    { name: 'dr. Tri Umiana Soleha', role: 'Pemeriksaan Medis & Triase Screening', image: 20 },
-    { name: 'Nidia Putri, S.Pd.', role: 'Bimbingan Perkuliahan & Pencegahan Dini', image: 21 },
-    { name: 'Hanny Nurluthfiah Rianti, A.A.', role: 'Liaison Mahasiswa & Hubungan Masyarakat', image: 24, light: true },
-    { name: 'M. Semario Ibrahim Habib Al Huda', role: 'Divisi Relawan & Peer Counselor', image: 33 },
-    { name: 'Niabi Rahma Wati', role: 'Advokasi Gender & Perlindungan Saksi', image: 32 },
-    { name: 'Mayang Atika Sekar Kirani', role: 'Sosialisasi Asrama & Unit Kegiatan', image: 25 },
-    { name: 'Olivia Elizabeth Sekar Lumbantobing', role: 'Penerimaan & Validasi Berkas Pelapor', image: 26 },
-    { name: 'Martha Vinencia Putri Singga', role: 'Dokumentasi & Arsip Kasus Rahasia', image: 28 },
-    { name: 'Kurnia Tri Rahayu', role: 'Pendampingan Psikososial Awal', image: 44 },
-    { name: 'Prof. Dr. Noverman Budiadi, M.Si.', role: 'Pakar Kebijakan Publik & Konseling Pemulihan', image: 60, consultant: true },
-    { name: 'Dr. Budiyono, MH.', role: 'Pakar Hukum Pidana Narkotika & Advokasi', image: 68, consultant: true }
-];
-
-function MemberCard({ member, leadership = false }) {
+function MemberCard({ member, leadership = false, leaders }) {
     return (
         <article className={`flex min-h-51.25 flex-col items-center rounded-lg border p-4 text-center shadow-sm transition-transform hover:-translate-y-1 ${member.light
                 ? 'border-[#D8E2EA] bg-white text-[#0B3C65]'
@@ -73,6 +38,14 @@ function MemberCard({ member, leadership = false }) {
 }
 
 export default function Tentang() {
+    const [organization, setOrganization] = useState(ORGANIZATION);
+
+    useEffect(() => {
+        getOrganization()
+            .then(setOrganization)
+            .catch((error) => console.error('Gagal memuat struktur organisasi.', error));
+    }, []);
+
     return (
         <div className="min-h-screen bg-white text-[#102B49]">
             <Navbar activePage="Tentang" />
@@ -145,12 +118,12 @@ export default function Tentang() {
                                 <span className="h-px flex-1 bg-[#D9E3EB]" />
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                                {leaders.map((leader) => <MemberCard key={leader.name} member={leader} leadership />)}
+                                {organization.leaders.map((leader) => <MemberCard key={leader.name} member={leader} leadership leaders={organization.leaders} />)}
                             </div>
                         </div>
 
                         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {members.map((member) => <MemberCard key={member.name} member={member} />)}
+                            {organization.members.map((member) => <MemberCard key={member.name} member={member} leaders={organization.leaders} />)}
                         </div>
                     </div>
                 </section>

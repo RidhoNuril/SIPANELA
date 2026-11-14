@@ -3,17 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/common/Footer.jsx';
 import Navbar from '../../components/common/Navbar.jsx';
 import Icon from '../../components/common/Icon';
-
-const heroImages = [
-    {
-        src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1600',
-        alt: 'Gedung kampus'
-    },
-    {
-        src: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1600',
-        alt: 'Suasana lingkungan perguruan tinggi'
-    }
-];
+import { getHeroImages, HERO_IMAGES } from '../../services/educationService.js';
 
 function HeroSection({ heroImages, activeImage, changeImage }) {
     return (
@@ -915,6 +905,13 @@ function StepsSection() {
 
 export default function Beranda() {
     const [activeImage, setActiveImage] = useState(0);
+    const [heroImages, setHeroImages] = useState(HERO_IMAGES);
+
+    useEffect(() => {
+        getHeroImages()
+            .then(setHeroImages)
+            .catch((error) => console.error('Gagal memuat gambar utama.', error));
+    }, []);
 
     const changeImage = useCallback((direction) => {
         setActiveImage((current) =>
@@ -922,7 +919,7 @@ export default function Beranda() {
                 ? (current + 1) % heroImages.length
                 : (current - 1 + heroImages.length) % heroImages.length
         );
-    }, []);
+    }, [heroImages.length]);
 
     useEffect(() => {
         // Set interval berganti gambar setiap 3 detik

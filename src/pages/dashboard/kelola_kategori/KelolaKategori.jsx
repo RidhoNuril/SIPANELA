@@ -1,14 +1,21 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import KelolaKategoriColumns from './KelolaKategoriColumns';
 import { Link } from 'react-router-dom';
-import { initialKategori } from './KelolaKategoriColumns';
 import Icon from '../../../components/common/Icon';
+import { getCategories, INITIAL_CATEGORIES } from '../../../services/categoryService.js';
 
 export default function KelolaKategori() {
+	const [categories, setCategories] = useState(INITIAL_CATEGORIES);
 
 	const columns = useMemo(() => KelolaKategoriColumns(), []);
+
+	useEffect(() => {
+		getCategories()
+			.then(setCategories)
+			.catch((error) => console.error('Gagal memuat daftar kategori.', error));
+	}, []);
 
 	return (
 		<DashboardLayout>
@@ -24,7 +31,7 @@ export default function KelolaKategori() {
 			</div>
 
 			<DataTable
-				data={initialKategori}
+				data={categories}
 				columns={columns}
 				pageSizeOptions={[5, 10, 25, 50, 100]}
 				searchPlaceholder="Cari nama kategori"

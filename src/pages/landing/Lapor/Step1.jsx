@@ -1,11 +1,9 @@
+import { useEffect, useState } from 'react';
 import Icon from '../../../components/common/Icon';
-
-const categories = [
-    'Peredaran Narkotika',
-    'Penyalahgunaan Narkotika',
-    'Penyalahgunaan Zat Adiktif',
-    'Lainnya'
-];
+import {
+    getReportFormCategories,
+    REPORT_FORM_CATEGORIES,
+} from '../../../services/reportService.js';
 
 export default function Step1({
     description,
@@ -19,6 +17,14 @@ export default function Step1({
     fileInputRef,
     onNext
 }) {
+    const [categories, setCategories] = useState(REPORT_FORM_CATEGORIES);
+
+    useEffect(() => {
+        getReportFormCategories()
+            .then(setCategories)
+            .catch((error) => console.error('Gagal memuat kategori laporan.', error));
+    }, []);
+
     return (
         <section className="overflow-hidden rounded-xl border border-[#E1E8EF] bg-white">
             <div className="h-1.5 bg-[#1CA1C7]" />

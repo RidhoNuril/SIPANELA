@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import Icon from '../../../components/common/Icon';
-import { initialKategori } from './KelolaKategoriColumns';
+import { getCategories, INITIAL_CATEGORIES } from '../../../services/categoryService.js';
 
 export default function FormKategori({ mode = 'create', initialValues = {} }) {
 	const { id } = useParams();
 	const isEditing = mode === 'edit';
+	const [categories, setCategories] = useState(INITIAL_CATEGORIES);
+	useEffect(() => {
+		getCategories()
+			.then(setCategories)
+			.catch((error) => console.error('Gagal memuat kategori.', error));
+	}, []);
+
 	const selectedKategori = initialValues.id
 		? initialValues
-		: initialKategori.find((kategori) => String(kategori.id) === id);
+		: categories.find((kategori) => String(kategori.id) === id);
 	const values = isEditing ? selectedKategori : initialValues;
 	const [namaKategori, setNamaKategori] = useState(values?.nama_kategori ?? '');
 	const [message, setMessage] = useState('');

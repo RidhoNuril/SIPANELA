@@ -1,17 +1,31 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import Icon from '../../../components/common/Icon';
-import { initialArtikel } from './KelolaArtikelColumns';
-
-const categories = ['Siaran Pers BNN', 'Edukasi Narkotika', 'Sosialisasi Kampus', 'Hukum Kampus'];
+import {
+	ARTICLE_FORM_CATEGORIES,
+	getArticleFormCategories,
+	getArticles,
+	INITIAL_ARTICLES,
+} from '../../../services/articleService.js';
 
 export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 	const { id } = useParams();
 	const isEditing = mode === 'edit';
+	const [articles, setArticles] = useState(INITIAL_ARTICLES);
+	const [categories, setCategories] = useState(ARTICLE_FORM_CATEGORIES);
+	useEffect(() => {
+		Promise.all([getArticles(), getArticleFormCategories()])
+			.then(([articleList, articleCategories]) => {
+				setArticles(articleList);
+				setCategories(articleCategories);
+			})
+			.catch((error) => console.error('Gagal memuat artikel.', error));
+	}, []);
+
 	const selectedArtikel = initialValues.id
 		? initialValues
-		: initialArtikel.find((artikel) => String(artikel.id) === id);
+		: articles.find((artikel) => String(artikel.id) === id);
 	const values = isEditing ? selectedArtikel : initialValues;
 	const [judul, setJudul] = useState(values?.judul ?? '');
 	const [kategori, setKategori] = useState(values?.kategori ?? '');

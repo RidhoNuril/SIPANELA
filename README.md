@@ -27,6 +27,7 @@ SIPANELA adalah aplikasi web untuk pelaporan dan pemantauan penanganan kasus ter
 - React Router 7 untuk navigasi sisi klien.
 - Tailwind CSS 4 melalui plugin Vite.
 - TanStack React Table untuk tabel data dan pagination.
+- Axios untuk komunikasi HTTP melalui satu instance konfigurasi.
 - Lucide React untuk ikon antarmuka.
 - Poppins sebagai font antarmuka lokal.
 - Oxlint untuk linting.
@@ -69,6 +70,8 @@ src/
 ├── main.jsx                      # Bootstrap React dan stylesheet
 ├── index.css                     # Tailwind, font Poppins, dan gaya global
 ├── App.css                       # Gaya aplikasi
+├── api/axiosConfig.js            # Axios instance dan interceptor
+├── services/                     # Data mock dan pemanggilan endpoint per domain
 ├── assets/                       # Gambar dan font lokal
 ├── components/common/            # Navbar, footer, layout dashboard, dan tabel bersama
 └── pages/
@@ -77,6 +80,20 @@ src/
 ```
 
 Konfigurasi Vite berada di `vite.config.js`; dependensi dan script npm berada di `package.json`.
+
+## Konfigurasi API
+
+Base URL API dibaca dari `VITE_API_URL` atau `REACT_APP_API_URL`. Jika keduanya tidak diatur, aplikasi menggunakan `http://localhost:3000/api`.
+
+Contoh file `.env`:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+Pemanggilan HTTP menggunakan instance di `src/api/axiosConfig.js`. Instance tersebut mengirim token Bearer dari `localStorage` (`token` atau `accessToken`) dan menghapus token serta memancarkan event `auth:unauthorized` saat menerima respons 401.
+
+Data contoh dan fungsi pemanggilan dikelompokkan di `src/services/`. Setiap service domain memiliki `USE_MOCK = true`; mode mock mengembalikan data yang sama seperti sebelumnya dengan jeda 500 ms, sementara komponen tetap merender data awal agar tidak menampilkan loading baru. Saat endpoint backend siap, ubah flag `USE_MOCK` pada service yang digunakan menjadi `false` dan sesuaikan path endpoint jika kontrak backend berbeda.
 
 ## Rute aplikasi
 
@@ -101,6 +118,6 @@ Konfigurasi Vite berada di `vite.config.js`; dependensi dan script npm berada di
 ## Catatan pengembangan
 
 - Navigasi menggunakan `BrowserRouter`. Deployment perlu mengarahkan fallback URL aplikasi ke `index.html` agar rute selain `/` dapat dibuka langsung.
-- Dashboard dan rekapitulasi memakai data contoh yang didefinisikan di source.
+- Dashboard, daftar laporan, edukasi, organisasi, profil, artikel, dan kategori menggunakan data contoh dari lapisan service.
 - Formulir dan perubahan status laporan belum mengirim data ke layanan backend; hubungkan ke API dan penyimpanan persisten sebelum digunakan untuk pelaporan operasional.
 - Belum ada script test otomatis di `package.json`.

@@ -1,50 +1,9 @@
+import { useEffect, useState } from 'react';
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/common/Icon';
-
-const articles = [
-    {
-        category: 'Fisiologis · DOPSI · SARAF',
-        readTime: '5 menit baca',
-        publisher: 'Satgas Medis Polinela',
-        title: 'Ilusi Energi Sesaat: Bagaimana Amfetamin Merusak Fungsi Memori Permanen',
-        description: 'Banyak mitos di kalangan mahasiswa mengenai zat stimulan penambah fokus saat ujian tugas akhir. Ketahui bagaimana zat ini secara biologis merusak reseptor...',
-        image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=900&q=85',
-        imageAlt: 'Ilustrasi otak dan sistem saraf',
-        imageClass: 'object-cover',
-    },
-    {
-        category: 'Fisiologis · DOPSI · SARAF',
-        readTime: '5 menit baca',
-        publisher: 'Satgas Medis Polinela',
-        title: 'Ilusi Energi Sesaat: Bagaimana Amfetamin Merusak Fungsi Memori Permanen',
-        description: 'Banyak mitos di kalangan mahasiswa mengenai zat stimulan penambah fokus saat ujian tugas akhir. Ketahui bagaimana zat ini secara biologis merusak reseptor...',
-        image: 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&w=900&q=85',
-        imageAlt: 'Ilustrasi otak dan sistem saraf',
-        imageClass: 'object-cover',
-    },
-    {
-        category: 'Tren & Waspada',
-        readTime: '7 menit baca',
-        publisher: 'Riset BNN & Polinela',
-        title: 'Waspada Vape Berisi Zat Adiktif Narkotika: Fakta & Deteksi Awal',
-        description: 'Kajian laboratorium mengenai penyalahgunaan cairan rokok elektrik sintetik yang mengandung zat psikotropika golongan baru yang membahayakan...',
-        image: 'https://images.unsplash.com/photo-1581093458791-9d42e3c7f9c1?auto=format&fit=crop&w=900&q=85',
-        imageAlt: 'Peralatan laboratorium untuk pengujian',
-        imageClass: 'object-cover',
-    },
-    {
-        category: 'Hukum Kampus',
-        readTime: '4 menit baca',
-        publisher: 'Biro Hukum Polinela',
-        title: 'Konsekuensi Hukum Pidana dan Sanksi Drop Out Tanpa Kompromi',
-        description: 'Penjelasan detail mengenai klausul pakta integritas mahasiswa Politeknik Negeri Lampung dan konsekuensi pidana bila terbukti mengedarkan atau memakai di...',
-        image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=85',
-        imageAlt: 'Ruang sidang pengadilan',
-        imageClass: 'object-cover',
-    },
-];
+import { EDUCATION_ARTICLES, getEducationArticles } from '../../../services/educationService.js';
 
 function ArticleCard({ article }) {
     return (
@@ -92,6 +51,14 @@ function ArticleCard({ article }) {
 }
 
 export default function Edukasi() {
+    const [articles, setArticles] = useState(EDUCATION_ARTICLES);
+
+    useEffect(() => {
+        getEducationArticles()
+            .then(setArticles)
+            .catch((error) => console.error('Gagal memuat artikel edukasi.', error));
+    }, []);
+
     return (
         <div className="flex min-h-screen flex-col bg-[#F1F6FA] text-[#102B49]">
             <Navbar activePage="Edukasi" />

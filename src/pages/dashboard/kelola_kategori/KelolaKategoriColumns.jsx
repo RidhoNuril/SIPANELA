@@ -1,16 +1,6 @@
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/common/Icon';
 
-export const initialKategori = [
-	{ id: 1, nama_kategori: 'Sosialisasi Kampus' },
-	{ id: 2, nama_kategori: 'Edukasi Narkotika' },
-	{ id: 3, nama_kategori: 'Siaran Pers BNN' },
-	{ id: 4, nama_kategori: 'Hukum Kampus' },
-	{ id: 5, nama_kategori: 'Regulasi Kampus' },
-	{ id: 6, nama_kategori: 'Pencurian' },
-	{ id: 7, nama_kategori: 'Pelanggaran Hukum' },
-];
-
 const columns = () => [
 	{
 		accessorKey: 'no',

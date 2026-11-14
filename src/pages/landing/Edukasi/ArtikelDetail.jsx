@@ -1,32 +1,19 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import Icon from '../../../components/common/Icon.jsx';
-
-const preventionPillars = [
-    {
-        title: 'Penguatan Literasi Bahaya Zat Psikoaktif Baru (NPS)',
-        description:
-            'Membedah mitos obat penunjang konsentrasi saat skripsi, serta identifikasi bahaya tembakau sintetis dan cairan rokok elektronik ilegal yang menyasar mahasiswa.',
-    },
-    {
-        title: 'Keterampilan Asertif Teman Sebaya (Peer Refusal)',
-        description:
-            'Pelatihan intensif bagi Badan Eksekutif Mahasiswa (BEM) dan Unit Kegiatan Mahasiswa (UKM) untuk menolak desakan pergaulan tanpa rasa canggung atau terkucilkan.',
-    },
-    {
-        title: 'Hotline Pelaporan Aman & Kerahasiaan Identitas (Whistleblower)',
-        description:
-            'Jaminan perlindungan identitas 100% bagi civitas akademika yang melaporkan indikasi peredaran gelap di area indeks maupun asrama kampus.',
-    },
-    {
-        title: 'Rehabilitasi Humanis Tanpa Pengucilan',
-        description:
-            'Penegakan klausul rehabilitasi medis dan konseling psikologis sebelum penjatuhan sanksi akademik bagi korban penyalahgunaan zat.',
-    },
-];
+import { getPreventionPillars, PREVENTION_PILLARS } from '../../../services/educationService.js';
 
 export default function ArtikelDetail() {
+    const [preventionPillars, setPreventionPillars] = useState(PREVENTION_PILLARS);
+
+    useEffect(() => {
+        getPreventionPillars()
+            .then(setPreventionPillars)
+            .catch((error) => console.error('Gagal memuat pilar pencegahan.', error));
+    }, []);
+
     return (
         <div className="flex min-h-screen flex-col bg-[#F1F6FA] text-[#102B49]">
             <Navbar activePage="Edukasi" />

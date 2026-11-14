@@ -1,18 +1,12 @@
-﻿import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import RekapitulasiColumns from './RekapitulasiColumns';
 import Icon from '../../../components/common/Icon';
-
-const allReports = [
-    { period: 'Maret 2026', year: 'Tahun 2026', month: 'Oktober', status: 'Terkini & Berjalan', cases: '982 Aduan Terverifikasi', size: '3,4 MB', note: 'Diperbarui 3 jam lalu' },
-    { period: 'Februari 2026', year: 'Tahun 2026', month: 'Oktober', status: 'PDF + XLSX', cases: '1.185 Kasus & Bukti Sitaan', size: '5,1 MB', note: 'Ditandatangani Deputi Penindakan' },
-    { period: 'Januari 2026', year: 'Tahun 2026', month: 'Oktober', status: 'PDF + XLSX', cases: '1.240 Kasus/Aduan Masuk', size: '4,8 MB', note: 'Diverifikasi BNN RI' },
-    { period: 'Desember 2025', year: 'Tahun 2025', month: 'Oktober', status: 'PDF + XLSX', cases: '1.320 Kasus Selesai', size: '4,6 MB', note: '' },
-    { period: 'November 2025', year: 'Tahun 2025', month: 'Oktober', status: 'PDF + XLSX', cases: '1.290 Kasus Selesai', size: '4,4 MB', note: '' },
-];
+import { getReportArchives, REPORT_ARCHIVES } from '../../../services/reportService.js';
 
 export default function Rekapitulasi() {
+    const [allReports, setAllReports] = useState(REPORT_ARCHIVES);
     const [year, setYear] = useState('Tahun 2026');
     const [month, setMonth] = useState('Oktober');
     const [range, setRange] = useState('12 Okt 2026 - 24 Okt 2024');
@@ -21,6 +15,12 @@ export default function Rekapitulasi() {
     const [activeFilters, setActiveFilters] = useState({ year: 'Tahun 2026', month: 'Oktober' });
     const [applied, setApplied] = useState(false);
 
+    useEffect(() => {
+        getReportArchives()
+            .then(setAllReports)
+            .catch((error) => console.error('Gagal memuat arsip laporan.', error));
+    }, []);
+
     // Memfilter data berdasarkan state aktif yang dikunci saat tombol "Terapkan Filter" diklik
     const filteredReports = useMemo(() => {
         return allReports.filter((item) => {
@@ -28,7 +28,7 @@ export default function Rekapitulasi() {
             const matchMonth = activeFilters.month ? item.month === activeFilters.month : true;
             return matchYear && matchMonth;
         });
-    }, [activeFilters]);
+    }, [activeFilters, allReports]);
 
 	const columns = useMemo(() => RekapitulasiColumns(), []);
 

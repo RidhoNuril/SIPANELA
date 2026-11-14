@@ -1,73 +1,29 @@
-﻿import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import DataTable from '../../../components/common/DataTable';
 import LaporanMasukColumns from './LaporanMasukColumns';
 import VerifikasiOverlay from './VerifikasiOverlay';
-
-const initialLaporan = [
-	{
-		idTiket: '#SPN-2026-089',
-		pelapor: 'Anonim (Mahasiswa)',
-		kategori: 'Dugaan Narkotika',
-		lokasi: 'Area Parkir Belakang Gedung Sakura',
-		waktu: '24 Okt 2024, 21:15 WIB',
-		status: 'Selesai',
-	},
-	{
-		idTiket: '#SPN-2026-088',
-		pelapor: 'Anonim (Tendik)',
-		kategori: 'Dugaan Narkotika',
-		lokasi: 'Gazebo SFS',
-		waktu: '24 Okt 2024, 19:40 WIB',
-		status: 'Investigasi',
-	},
-	{
-		idTiket: '#SPN-2026-087',
-		pelapor: 'Anonim (Mahasiswa)',
-		kategori: 'Transaksi Obat',
-		lokasi: 'Sekitar Kantin GKB',
-		waktu: '23 Okt 2024, 14:10 WIB',
-		status: 'Verifikasi',
-	},
-	{
-		idTiket: '#SPN-2026-086',
-		pelapor: 'Petugas Keamanan',
-		kategori: 'Transaksi Obat',
-		lokasi: 'Lahan Peternakan Politeknik',
-		waktu: '22 Okt 2024, 22:50 WIB',
-		status: 'Menunggu',
-	},
-	{
-		idTiket: '#SPN-2026-085',
-		pelapor: 'Anonim (Warga Kampus)',
-		kategori: 'Pemakai',
-		lokasi: 'Lobi Gedung Direktorat Lt. 1',
-		waktu: '21 Okt 2024, 08:30 WIB',
-		status: 'Di Tolak',
-	},
-	{
-		idTiket: '#SPN-2026-084',
-		pelapor: 'Mahasiswa A',
-		kategori: 'Transaksi Obat',
-		lokasi: 'Koridor Gedung Kuliah Bersama',
-		waktu: '20 Okt 2024, 10:00 WIB',
-		status: 'Selesai',
-	},
-	{
-		idTiket: '#SPN-2026-083',
-		pelapor: 'Dosen B',
-		kategori: 'Zat Adiktif Lainnya',
-		lokasi: 'Kantin Fakultas Teknik',
-		waktu: '19 Okt 2024, 13:20 WIB',
-		status: 'Investigasi',
-	},
-];
+import {
+	getIncomingReports,
+	getReportFilterCategories,
+	INITIAL_REPORTS,
+	REPORT_FILTER_CATEGORIES,
+} from '../../../services/reportService.js';
 
 export default function LaporanMasuk() {
-	const [laporan, setLaporan] = useState(initialLaporan);
+	const [laporan, setLaporan] = useState(INITIAL_REPORTS);
 	const [activeCategory, setActiveCategory] = useState('Semua Kategori');
 	const [selectedReport, setSelectedReport] = useState(null);
-	const categories = ['Semua Kategori', 'Transaksi Obat', 'Pemakai', 'Zat Adiktif Lainnya', 'Dugaan Narkotika'];
+	const [categories, setCategories] = useState(REPORT_FILTER_CATEGORIES);
+
+	useEffect(() => {
+		Promise.all([getIncomingReports(), getReportFilterCategories()])
+			.then(([reports, reportCategories]) => {
+				setLaporan(reports);
+				setCategories(reportCategories);
+			})
+			.catch((error) => console.error('Gagal memuat laporan masuk.', error));
+	}, []);
 
 	const filteredData = useMemo(() => {
 		if (activeCategory === 'Semua Kategori') {
