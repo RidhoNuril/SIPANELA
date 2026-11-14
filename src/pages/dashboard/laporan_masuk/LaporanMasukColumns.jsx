@@ -1,6 +1,6 @@
 import Icon from '../../../components/common/Icon';
 
-const columns = (onVerify) => [
+const columns = (onVerify, onDelete, readOnly) => [
 	{
 		accessorKey: 'idTiket',
 		header: 'ID TIKET',
@@ -57,15 +57,25 @@ const columns = (onVerify) => [
 		id: 'tindakan',
 		header: 'TINDAKAN',
 		cell: (info) => (
-			<div className="text-center">
-				<button
-					type="button"
-					onClick={() => onVerify(info.row.original)}
-					className="px-5 py-1.5 bg-[#0B3C65] hover:bg-blue-900 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
-				>
-					Verifikasi
-				</button>
-			</div>
+			readOnly ? <span className="text-xs text-slate-400">Demo</span> : (
+				<div className="flex items-center justify-center gap-2">
+					<button
+						type="button"
+						onClick={() => onVerify(info.row.original)}
+						className="px-5 py-1.5 bg-[#0B3C65] hover:bg-blue-900 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
+					>
+						Verifikasi
+					</button>
+					<button
+						type="button"
+						onClick={() => onDelete(info.row.original)}
+						aria-label={`Hapus laporan ${info.row.original.idTiket}`}
+						className="rounded-lg border border-rose-200 px-2.5 py-1.5 text-rose-700 hover:bg-rose-50"
+					>
+						<Icon name="trash" />
+					</button>
+				</div>
+			)
 		),
 	},
 ];

@@ -15,7 +15,7 @@ const menuItems = [
 	{
 		title: 'Menu Artikel',
 		links: [
-			{ to: '/dashboard/kategori', label: 'Kelola Kategori', icon: 'tags-fill' },
+			{ to: '/dashboard/kategori', label: 'Kategori Artikel', icon: 'tags-fill' },
 			{ to: '/dashboard/artikel', label: 'Kelola Artikel', icon: 'file-earmark-post-fill' },
 		]
 	}

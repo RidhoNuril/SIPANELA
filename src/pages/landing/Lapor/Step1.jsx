@@ -1,12 +1,5 @@
 import Icon from '../../../components/common/Icon';
 
-const categories = [
-    'Peredaran Narkotika',
-    'Penyalahgunaan Narkotika',
-    'Penyalahgunaan Zat Adiktif',
-    'Lainnya'
-];
-
 export default function Step1({
     description,
     setDescription,
@@ -17,6 +10,13 @@ export default function Step1({
     selectFile,
     clearDraft,
     fileInputRef,
+    reportTypes,
+    reportTypesLoading,
+    reportTypesError,
+    selectedReportTypeId,
+    setSelectedReportTypeId,
+    incidentTime,
+    setIncidentTime,
     onNext
 }) {
     return (
@@ -35,10 +35,27 @@ export default function Step1({
                         Kategori Jenis Pelanggaran <span className="text-[#E54646]">*</span>
                     </label>
                     <p className="mt-1 text-xs text-[#71849B]">Pilih klasifikasi yang paling mendekati situasi yang Anda saksikan.</p>
-                    <select id="category" name="category" required defaultValue="" className="mt-2 h-11 w-full rounded-lg border border-[#DCE5EE] bg-white px-3 text-sm text-[#52657C] outline-none focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15">
+                    <select id="category" name="id_jenis" required value={selectedReportTypeId} onChange={(event) => setSelectedReportTypeId(event.target.value)} disabled={reportTypesLoading} className="mt-2 h-11 w-full rounded-lg border border-[#DCE5EE] bg-white px-3 text-sm text-[#52657C] outline-none focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15 disabled:bg-slate-100">
                         <option value="" disabled>-- Pilih Kategori Pelanggaran --</option>
-                        {categories.map((category) => <option key={category}>{category}</option>)}
+                        {reportTypes.map((type) => <option key={type.id_jenis} value={type.id_jenis}>{type.nama_jenis}</option>)}
                     </select>
+                    {reportTypesError && <p role="alert" className="mt-2 text-xs text-red-600">{reportTypesError}</p>}
+                    {!reportTypesLoading && reportTypes.length === 0 && !reportTypesError && <p className="mt-2 text-xs text-amber-700">Jenis laporan belum tersedia.</p>}
+                </div>
+
+                <div className="mt-5">
+                    <label htmlFor="incident-time" className="block text-sm font-semibold text-[#172B45]">
+                        Waktu Kejadian <span className="text-[#E54646]">*</span>
+                    </label>
+                    <input
+                        id="incident-time"
+                        name="waktu_kejadian"
+                        type="datetime-local"
+                        required
+                        value={incidentTime}
+                        onChange={(event) => setIncidentTime(event.target.value)}
+                        className="mt-2 h-11 w-full rounded-lg border border-[#DCE5EE] px-3 text-sm text-[#52657C] outline-none focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15"
+                    />
                 </div>
 
                 <div className="mt-6">

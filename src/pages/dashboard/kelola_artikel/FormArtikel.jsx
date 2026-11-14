@@ -1,35 +1,145 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import DashboardLayout from '../../../components/common/DashboardLayout';
 import Icon from '../../../components/common/Icon';
-import { initialArtikel } from './KelolaArtikelColumns';
-
-const categories = ['Siaran Pers BNN', 'Edukasi Narkotika', 'Sosialisasi Kampus', 'Hukum Kampus'];
+import { getArticleById, createArticle, updateArticle } from '../../../services/articleService.js';
+import { getArticleCategories } from '../../../services/articleCategoryService.js';
+import { demoArticleCategories, demoArticles } from '../../../data/demoData.js';
 
 export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 	const { id } = useParams();
+	const navigate = useNavigate();
 	const isEditing = mode === 'edit';
-	const selectedArtikel = initialValues.id
-		? initialValues
-		: initialArtikel.find((artikel) => String(artikel.id) === id);
-	const values = isEditing ? selectedArtikel : initialValues;
-	const [judul, setJudul] = useState(values?.judul ?? '');
-	const [kategori, setKategori] = useState(values?.kategori ?? '');
-	const [konten, setKonten] = useState(values?.konten ?? '');
+	const initialValuesRef = useRef(initialValues);
+	const [values, setValues] = useState(initialValues);
+	const [categories, setCategories] = useState(demoArticleCategories);
+	const [loading, setLoading] = useState(isEditing);
+	const [saving, setSaving] = useState(false);
+	const [error, setError] = useState('');
+	const [isDemoData, setIsDemoData] = useState(true);
+	const [isDemoArticle, setIsDemoArticle] = useState(false);
+	const [judul, setJudul] = useState(initialValues.judul ?? '');
+	const [kategori, setKategori] = useState(initialValues.id_category ? String(initialValues.id_category) : '');
+	const [konten, setKonten] = useState(initialValues.deskripsi ?? '');
 	const [thumbnail, setThumbnail] = useState(null);
-	const [visibility, setVisibility] = useState(values?.visibility ?? 'publik');
-	const [message, setMessage] = useState('');
+	const [visibility, setVisibility] = useState(initialValues.is_public === false ? 'privasi' : 'publik');
+	const mutationController = useRef(null);
+	const mountedRef = useRef(true);
 
-	function handleSubmit(event) {
+	useEffect(() => {
+		const controller = new AbortController();
+		let isMounted = true;
+		mountedRef.current = true;
+
+		async function loadFormData() {
+			try {
+				let categoryRows = demoArticleCategories;
+				let article = initialValuesRef.current;
+				let fallbackErrors = [];
+				let articleIsDemo = false;
+				try {
+					const categoryResponse = await getArticleCategories({ signal: controller.signal });
+					const responseCategories = Array.isArray(categoryResponse) ? categoryResponse : categoryResponse?.data;
+					if (!Array.isArray(responseCategories)) {
+						throw new Error('Respons kategori artikel harus berupa array atau memiliki properti data berbentuk array.');
+					}
+					categoryRows = responseCategories;
+				} catch (loadError) {
+					if (loadError.name === 'AbortError') return;
+					fallbackErrors.push(loadError.message || 'Kategori artikel gagal dimuat.');
+				}
+
+				if (isEditing) {
+					try {
+						const articleResponse = await getArticleById(id, { signal: controller.signal });
+						article = articleResponse?.data ?? articleResponse;
+					} catch (loadError) {
+						if (loadError.name === 'AbortError') return;
+						article = demoArticles.find((item) => String(item.id_artikel) === id);
+						articleIsDemo = Boolean(article);
+						fallbackErrors.push(loadError.message || 'Artikel gagal dimuat.');
+					}
+				}
+
+				if (isMounted) {
+					setCategories(categoryRows);
+					setValues(article);
+					setJudul(article?.judul ?? '');
+					setKategori(article?.id_category ? String(article.id_category) : '');
+					setKonten(article?.deskripsi ?? '');
+					setVisibility(article?.is_public === false ? 'privasi' : 'publik');
+					setIsDemoData(fallbackErrors.length > 0);
+					setIsDemoArticle(articleIsDemo);
+					if (fallbackErrors.length) setError(fallbackErrors.join(' '));
+				}
+			} finally {
+				if (isMounted) setLoading(false);
+			}
+		}
+
+		loadFormData();
+		return () => {
+			isMounted = false;
+			mountedRef.current = false;
+			controller.abort();
+			mutationController.current?.abort();
+		};
+	}, [id, isEditing]);
+
+	async function handleSubmit(event) {
 		event.preventDefault();
-		setMessage('Tampilan form sudah siap. Penyimpanan artikel belum terhubung.');
+		if (isDemoArticle) {
+			setError('Artikel demo tidak dapat disimpan. Sambungkan ke API untuk memperbarui artikel.');
+			return;
+		}
+		const payload = {
+			judul,
+			id_category: Number(kategori),
+			deskripsi: konten,
+			is_public: visibility === 'publik',
+		};
+		if (thumbnail) {
+			const formData = new FormData();
+			Object.entries(payload).forEach(([key, value]) => formData.append(key, String(value)));
+			formData.append('file_foto', thumbnail);
+			mutationController.current = new AbortController();
+			setSaving(true);
+			setError('');
+			try {
+				if (isEditing) await updateArticle(id, formData, { signal: mutationController.current.signal });
+				else await createArticle(formData, { signal: mutationController.current.signal });
+				if (mountedRef.current) navigate('/dashboard/artikel');
+			} catch (submitError) {
+				if (mountedRef.current && submitError.name !== 'AbortError') setError(submitError.message || 'Artikel gagal disimpan.');
+			} finally {
+				if (mountedRef.current) setSaving(false);
+			}
+			return;
+		}
+
+		mutationController.current = new AbortController();
+		setSaving(true);
+		setError('');
+		try {
+			if (isEditing) await updateArticle(id, payload, { signal: mutationController.current.signal });
+			else await createArticle(payload, { signal: mutationController.current.signal });
+			if (mountedRef.current) navigate('/dashboard/artikel');
+		} catch (submitError) {
+			if (mountedRef.current && submitError.name !== 'AbortError') setError(submitError.message || 'Artikel gagal disimpan.');
+		} finally {
+			if (mountedRef.current) setSaving(false);
+		}
 	}
 
-	if (isEditing && !selectedArtikel) {
+	if (loading) {
+		return <DashboardLayout><p role="status" className="rounded-xl border border-slate-200 bg-white p-6 text-sm text-slate-500">Memuat formulir artikel...</p></DashboardLayout>;
+	}
+
+	if (isEditing && !values?.id_artikel) {
 		return (
 			<DashboardLayout>
 				<div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-					<h2 className="text-xl font-bold text-[#0B3C65]">Artikel tidak ditemukan</h2>
+					<h2 className="text-xl font-bold text-[#0B3C65]">{error || 'Artikel tidak ditemukan'}</h2>
 					<Link to="/dashboard/artikel" className="mt-4 inline-block text-sm font-medium text-sky-700 hover:underline">
 						Kembali ke Kelola Artikel
 					</Link>
@@ -57,14 +167,14 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 								<label htmlFor="judul-artikel" className="text-sm font-semibold text-slate-700">
 									Judul Artikel <span className="text-rose-500">*</span>
 								</label>
-								<span className="text-xs text-slate-500">{judul.length} / 120 Karakter</span>
+								<span className="text-xs text-slate-500">{judul.length} / 150 Karakter</span>
 							</div>
 							<input
 								id="judul-artikel"
 								name="judul"
 								type="text"
 								required
-								maxLength={120}
+								maxLength={150}
 								value={judul}
 								onChange={(event) => setJudul(event.target.value)}
 								placeholder="Isi judul artikel"
@@ -83,7 +193,7 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 								className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-sky-500 focus:ring-4 focus:ring-sky-100"
 							>
 								<option value="">== Pilih Kategori ==</option>
-								{categories.map((category) => <option key={category} value={category}>{category}</option>)}
+								{categories.map((category) => <option key={category.id_category} value={category.id_category}>{category.nama_kategori}</option>)}
 							</select>
 
 							<label htmlFor="isi-artikel" className="mt-5 block text-sm font-semibold text-slate-700">
@@ -125,7 +235,7 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 									<span className="text-xs font-semibold text-[#0B3C65]">
 										{thumbnail?.name ?? (isEditing ? 'Ganti thumbnail (opsional)' : 'Tarik berkas ke sini, atau telusuri')}
 									</span>
-									{isEditing && values?.image && !thumbnail && (
+									{isEditing && values?.file_foto && !thumbnail && (
 										<span className="mt-1 text-[11px] text-slate-500">Thumbnail saat ini sudah tersedia</span>
 									)}
 									<span className="mt-1 text-[11px] leading-4 text-slate-500">Format: JPG, PNG, atau WEBP<br />(Maks. 5MB, rasio ideal 16:9)</span>
@@ -168,9 +278,15 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 						</aside>
 					</div>
 
-					{message && (
-						<p role="status" className="mt-5 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
-							{message}
+					{isDemoData && error && (
+						<p role="alert" className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+							API tidak tersedia ({error}). Form menampilkan data demo; penyimpanan tetap memerlukan API.
+						</p>
+					)}
+
+					{error && !isDemoData && (
+						<p role="alert" className="mt-5 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">
+							{error}
 						</p>
 					)}
 
@@ -183,9 +299,10 @@ export default function FormArtikel({ mode = 'create', initialValues = {} }) {
 						</Link>
 						<button
 							type="submit"
-							className="rounded-xl bg-[#0B3C65] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A2E4D]"
+							disabled={saving || categories.length === 0 || isDemoArticle}
+							className="rounded-xl bg-[#0B3C65] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0A2E4D] disabled:opacity-60"
 						>
-							{isEditing ? 'Simpan Perubahan' : 'Simpan Artikel'}
+							{saving ? 'Menyimpan...' : isEditing ? 'Simpan Perubahan' : 'Simpan Artikel'}
 						</button>
 					</div>
 				</form>

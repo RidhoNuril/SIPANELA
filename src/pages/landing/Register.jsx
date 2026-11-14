@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo_sipanela.svg';
 import Icon from '../../components/common/Icon';
+import { registerUser } from '../../services/authService.js';
 
 function RegisterField({ id, label, children }) {
     return (
@@ -18,8 +19,21 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const controllerRef = useRef(null);
+    const mountedRef = useRef(true);
 
-    function handleSubmit(event) {
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => {
+            mountedRef.current = false;
+            controllerRef.current?.abort();
+        };
+    }, []);
+
+    async function handleSubmit(event) {
         event.preventDefault();
         const form = event.currentTarget;
         const confirmation = form.elements.namedItem('confirmPassword');
@@ -31,6 +45,28 @@ export default function Register() {
         }
 
         confirmation.setCustomValidity('');
+        const values = new FormData(form);
+        const userData = {
+            nama: String(values.get('nama') ?? '').trim(),
+            nomor_identitas: String(values.get('identityNumber') ?? '').trim(),
+            email: String(values.get('email') ?? '').trim(),
+            no_hp: String(values.get('phone') ?? '').trim(),
+            password,
+        };
+
+        controllerRef.current = new AbortController();
+        setLoading(true);
+        setError('');
+        try {
+            await registerUser(userData, { signal: controllerRef.current.signal });
+            if (mountedRef.current) navigate('/login', { state: { registered: true } });
+        } catch (registerError) {
+            if (mountedRef.current && registerError.name !== 'AbortError') {
+                setError(registerError.message || 'Pendaftaran gagal.');
+            }
+        } finally {
+            if (mountedRef.current) setLoading(false);
+        }
     }
 
     return (
@@ -53,6 +89,19 @@ export default function Register() {
                 </div>
 
                 <form className="mt-3 space-y-2" onSubmit={handleSubmit}>
+                    <RegisterField id="nama" label="Nama Lengkap">
+                        <input
+                            id="nama"
+                            name="nama"
+                            type="text"
+                            autoComplete="name"
+                            required
+                            maxLength={100}
+                            placeholder="Nama lengkap"
+                            className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-[#929292]"
+                        />
+                    </RegisterField>
+
                     <RegisterField id="identityNumber" label="Nomor Induk Mahasiswa (NIM) / NIP">
                         <input
                             id="identityNumber"
@@ -143,11 +192,14 @@ export default function Register() {
                         </span>
                     </label>
 
+                    {error && <p role="alert" className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+
                     <button
                         type="submit"
-                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-full bg-[#0D416A] text-md sm:text-lg font-semibold text-white shadow-[0_3px_6px_rgba(0,0,0,0.18)] transition-colors hover:bg-[#092F4D]"
+                        disabled={loading}
+                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-full bg-[#0D416A] text-md sm:text-lg font-semibold text-white shadow-[0_3px_6px_rgba(0,0,0,0.18)] transition-colors hover:bg-[#092F4D] disabled:opacity-60"
                     >
-                        Daftar Sekarang
+                        {loading ? 'Mendaftarkan...' : 'Daftar Sekarang'}
                         <Icon name="arrow-right-outline" className="h-4 w-4" />
                     </button>
                 </form>

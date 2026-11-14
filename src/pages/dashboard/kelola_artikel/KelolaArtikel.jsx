@@ -1,24 +1,91 @@
-import { useState, useMemo } from 'react';
-import DashboardLayout from '../../../components/common/DashboardLayout';
-import DataTable from '../../../components/common/DataTable';
-import KelolaArtikelColumns from './KelolaArtikelColumns';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import DashboardLayout from '../../../components/common/DashboardLayout.jsx';
+import DataTable from '../../../components/common/DataTable.jsx';
+import KelolaArtikelColumns from './KelolaArtikelColumns.jsx';
 import { Link } from 'react-router-dom';
-import { initialArtikel } from './KelolaArtikelColumns';
-import Icon from '../../../components/common/Icon';
-
+import Icon from '../../../components/common/Icon.jsx';
+import { demoArticleCategories, demoArticles } from '../../../data/demoData.js';
+import { getArticles, deleteArticle } from '../../../services/articleService.js';
+import { getArticleCategories } from '../../../services/articleCategoryService.js';
 
 export default function KelolaArtikel() {
 	const [activeCategory, setActiveCategory] = useState('Semua Artikel');
-	const categories = ['Semua Artikel', 'Siaran Pers BNN', 'Edukasi Narkotika', 'Sosialisasi Kampus', 'Draf'];
+	const [articles, setArticles] = useState(demoArticles);
+	const [categories, setCategories] = useState(demoArticleCategories);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState('');
+	const [isDemoData, setIsDemoData] = useState(true);
 
-	const filteredData = useMemo(() => {
-		if (activeCategory === 'Semua Artikel') {
-			return initialArtikel;
+	useEffect(() => {
+		const controller = new AbortController();
+		let isMounted = true;
+
+		async function loadData() {
+			setLoading(true);
+			setError('');
+			try {
+				const [articleResponse, categoryResponse] = await Promise.all([
+					getArticles({ signal: controller.signal }),
+					getArticleCategories({ signal: controller.signal }),
+				]);
+				const articleRows = Array.isArray(articleResponse) ? articleResponse : articleResponse?.data;
+				const categoryRows = Array.isArray(categoryResponse) ? categoryResponse : categoryResponse?.data;
+				if (!Array.isArray(articleRows) || !Array.isArray(categoryRows)) {
+					throw new Error('Respons artikel dan kategori harus berupa array atau memiliki properti data berbentuk array.');
+				}
+				if (isMounted) {
+					setArticles(articleRows);
+					setCategories(categoryRows);
+					setIsDemoData(false);
+				}
+			} catch (loadError) {
+				if (isMounted && loadError.name !== 'AbortError') {
+					setError(loadError.message || 'Artikel gagal dimuat.');
+				}
+			} finally {
+				if (isMounted) setLoading(false);
+			}
 		}
-		return initialArtikel.filter((item) => item.kategori === activeCategory);
-	}, [activeCategory]);
 
-	const columns = useMemo(() => KelolaArtikelColumns(filteredData), [filteredData]);
+		loadData();
+		return () => {
+			isMounted = false;
+			controller.abort();
+		};
+	}, []);
+
+	const categoryNameById = useMemo(
+		() => new Map(categories.map((category) => [String(category.id_category), category.nama_kategori])),
+		[categories],
+	);
+	const displayedArticles = useMemo(() => articles.map((article) => ({
+		...article,
+		id: article.id_artikel,
+		image: article.file_foto,
+		kategori: categoryNameById.get(String(article.id_category)) ?? article.kategori?.nama_kategori ?? '—',
+		status: article.is_public ? 'Diterbitkan' : 'Draf',
+		penulis: article.penulis?.nama ?? article.user?.nama ?? article.id_user ?? '—',
+	})), [articles, categoryNameById]);
+	const filteredData = useMemo(() => {
+		if (activeCategory === 'Semua Artikel') return displayedArticles;
+		if (activeCategory === 'Draf') return displayedArticles.filter((item) => item.status === 'Draf');
+		return displayedArticles.filter((item) => item.kategori === activeCategory);
+	}, [activeCategory, displayedArticles]);
+
+	const removeArticle = useCallback(async (article) => {
+		if (!window.confirm(`Hapus artikel "${article.judul}"?`)) return;
+		try {
+			await deleteArticle(article.id_artikel);
+			setArticles((current) => current.filter((item) => item.id_artikel !== article.id_artikel));
+		} catch (deleteError) {
+			setError(deleteError.message || 'Artikel gagal dihapus.');
+		}
+	}, []);
+	const columns = useMemo(
+		() => KelolaArtikelColumns(removeArticle, isDemoData),
+		[isDemoData, removeArticle],
+	);
+	const categoryFilters = ['Semua Artikel', ...categories.map((category) => category.nama_kategori), 'Draf'];
 
 	return (
 		<DashboardLayout>
@@ -33,51 +100,9 @@ export default function KelolaArtikel() {
 					</Link>
 			</div>
 
-			{/* Metric Cards Grid */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-					{/* Card 1 */}
-					<div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-xs relative overflow-hidden flex flex-col justify-between">
-						<div className="flex justify-between items-start">
-							<span className="text-xs font-bold text-gray-400 tracking-wider">TOTAL ARTIKEL TERBIT</span>
-							<div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-								<Icon name="box-arrow-in-down" />
-							</div>
-						</div>
-						<div className="mt-6">
-							<span className="text-4xl font-semibold text-[#0B3C65]">12</span>
-						</div>
-					</div>
-
-					{/* Card 2 */}
-					<div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-xs relative overflow-hidden flex flex-col justify-between">
-						<div className="flex justify-between items-start">
-							<span className="text-xs font-bold text-gray-400 tracking-wider">DRAF ARTIKEL</span>
-							<div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
-								<Icon name="check-circle-fill" />
-							</div>
-						</div>
-						<div className="mt-6">
-							<span className="text-4xl font-semibold text-[#0B3C65]">40</span>
-						</div>
-					</div>
-
-					{/* Card 3 */}
-					<div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-xs relative overflow-hidden flex flex-col justify-between">
-						<div className="flex justify-between items-start">
-							<span className="text-xs font-bold text-gray-400 tracking-wider">KATEGORI EDUKASI</span>
-							<div className="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600">
-								<Icon name="exclamation-triangle-fill" />
-							</div>
-						</div>
-						<div className="mt-6">
-							<span className="text-4xl font-semibold text-[#0B3C65]">30</span>
-						</div>
-					</div>
-				</div>
-
 			{/* Category Filter Pills */}
 			<div className="flex flex-wrap items-center gap-2 mb-6">
-				{categories.map((cat) => (
+				{categoryFilters.map((cat) => (
 					<button
 						key={cat}
 						onClick={() => setActiveCategory(cat)}
@@ -91,6 +116,13 @@ export default function KelolaArtikel() {
 				))}
 			</div>
 
+			{isDemoData && (
+				<p role={error ? 'alert' : 'status'} className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+					{error ? `API belum tersedia (${error}). Menampilkan data demo; perubahan tidak tersimpan ke server.` : 'Menampilkan data demo sambil mencoba memuat API.'}
+				</p>
+			)}
+			{error && !isDemoData && <p role="alert" className="mb-4 rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+			{loading && <p role="status" className="mb-3 text-xs text-slate-500">Menyinkronkan data artikel...</p>}
 			<DataTable
 				data={filteredData}
 				columns={columns}

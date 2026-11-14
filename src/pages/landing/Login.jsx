@@ -1,10 +1,52 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo_sipanela.svg';
 import Icon from '../../components/common/Icon';
+import { loginUser } from '../../services/authService.js';
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+    const controllerRef = useRef(null);
+    const mountedRef = useRef(true);
+
+    useEffect(() => {
+        mountedRef.current = true;
+        return () => {
+            mountedRef.current = false;
+            controllerRef.current?.abort();
+        };
+    }, []);
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const identifier = String(formData.get('identifier') ?? '').trim();
+        const password = String(formData.get('password') ?? '');
+        const credentials = identifier.includes('@')
+            ? { email: identifier, password }
+            : { nomor_identitas: identifier, password };
+
+        controllerRef.current = new AbortController();
+        setLoading(true);
+        setError('');
+        try {
+            const response = await loginUser(credentials, { signal: controllerRef.current.signal });
+            const result = response?.data ?? response;
+            const token = result.accessToken ?? result.access_token ?? result.token;
+            if (token) localStorage.setItem('accessToken', token);
+            if (result.user) localStorage.setItem('user', JSON.stringify(result.user));
+            if (mountedRef.current) navigate('/dashboard');
+        } catch (loginError) {
+            if (mountedRef.current && loginError.name !== 'AbortError') {
+                setError(loginError.message || 'Login gagal. Periksa kembali kredensial Anda.');
+            }
+        } finally {
+            if (mountedRef.current) setLoading(false);
+        }
+    }
 
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F8FAFB] px-6 py-24 font-['Poppins'] text-[#111827]">
@@ -25,11 +67,11 @@ export default function Login() {
                     </p>
                 </div>
 
-                <form className="mt-7 space-y-6" onSubmit={(event) => event.preventDefault()}>
+                <form className="mt-7 space-y-6" onSubmit={handleSubmit}>
                     <label className="flex h-14 items-center gap-3 rounded-full border border-[#E6E6E6] bg-white/80 px-6 shadow-[0_4px_8px_rgba(0,0,0,0.18)] focus-within:ring-2 focus-within:ring-[#0B3C65]/20">
                         <span className="sr-only">Username</span>
                         <input
-                            name="username"
+                            name="identifier"
                             type="text"
                             autoComplete="username"
                             required
@@ -63,8 +105,10 @@ export default function Login() {
                         </button>
                     </label>
 
-                    <button type="submit" className="h-12 w-full rounded-xl bg-[#0D416A] text-md sm:text-lg font-bold text-white transition-colors hover:bg-[#092F4D]">
-                        Login
+                    {error && <p role="alert" className="rounded-lg bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p>}
+
+                    <button type="submit" disabled={loading} className="h-12 w-full rounded-xl bg-[#0D416A] text-md sm:text-lg font-bold text-white transition-colors hover:bg-[#092F4D] disabled:opacity-60">
+                        {loading ? 'Memproses...' : 'Login'}
                     </button>
                 </form>
 

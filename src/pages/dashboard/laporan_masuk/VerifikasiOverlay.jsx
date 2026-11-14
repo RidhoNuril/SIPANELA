@@ -99,6 +99,7 @@ function StagePanel({
 	onSave,
 	saveLabel = 'Simpan & Lanjutkan',
 	canSave = true,
+	saving = false,
 }) {
 	return (
 		<section className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm sm:p-4">
@@ -113,10 +114,10 @@ function StagePanel({
 				<button
 					type="button"
 					onClick={onSave}
-					disabled={!canSave}
+					disabled={!canSave || saving}
 					className="flex items-center rounded-lg bg-emerald-600 px-4 py-2 text-[10px] font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
 				>
-					{saveLabel}
+					{saving ? 'Menyimpan...' : saveLabel}
 					{saveLabel.includes('Lanjutkan') && (
 						<Icon name="arrow-right" className="ml-2" />
 					)}
@@ -291,7 +292,7 @@ function getVisibleHistory(report, currentStage, isRejected) {
 	return history.sort((first, second) => first.stage - second.stage);
 }
 
-export default function VerifikasiOverlay({ report, onClose, onSave }) {
+export default function VerifikasiOverlay({ report, onClose, onSave, saving = false, errorMessage = '' }) {
 	const currentStage = report.activeStage ?? statusToStage[report.status] ?? 1;
 	const isRejected = report.status === 'Di Tolak';
 	const isComplete = currentStage >= stages.length && !isRejected;
@@ -376,6 +377,7 @@ export default function VerifikasiOverlay({ report, onClose, onSave }) {
 						<Icon name="x-lg" className="text-xs" />
 					</button>
 				</header>
+				{errorMessage && <p role="alert" className="mx-5 mt-3 rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-700 sm:mx-6">{errorMessage}</p>}
 
 				<div className="space-y-4 overflow-y-auto px-5 py-4 sm:px-6 sm:py-4">
 					<ProgressPanel
@@ -399,6 +401,7 @@ export default function VerifikasiOverlay({ report, onClose, onSave }) {
 									stage={1}
 									title="Verifikasi"
 									onSave={handleSave}
+									saving={saving}
 								>
 									<div className="grid gap-2 md:grid-cols-2">
 										<DecisionCard
@@ -434,6 +437,7 @@ export default function VerifikasiOverlay({ report, onClose, onSave }) {
 									stage={2}
 									title="Investigasi"
 									onSave={handleSave}
+									saving={saving}
 									saveLabel="Simpan & Lanjutkan"
 								>
 									<StageNoteField
@@ -450,6 +454,7 @@ export default function VerifikasiOverlay({ report, onClose, onSave }) {
 									stage={3}
 									title="Selesai"
 									onSave={handleSave}
+									saving={saving}
 									saveLabel="Simpan"
 									canSave={Boolean(stageNote.trim())}
 								>

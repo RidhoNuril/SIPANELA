@@ -1,10 +1,22 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import Step1 from './Step1.jsx';
 import Step2 from './Step2.jsx';
 import Step3 from './Step3.jsx';
 import Step4 from './Step4.jsx';
+import { getReportTypes } from '../../../services/reportTypeService.js';
+import { createReport } from '../../../services/reportService.js';
+import { createReportEvidence } from '../../../services/reportEvidenceService.js';
+import { demoReportTypes } from '../../../data/demoData.js';
+
+function unwrapItems(response) {
+    const items = Array.isArray(response) ? response : response?.data;
+    if (!Array.isArray(items)) {
+        throw new Error('Respons jenis laporan harus berupa array atau memiliki properti data berbentuk array.');
+    }
+    return items;
+}
 
 export default function Lapor() {
     const [step, setStep] = useState(1);
@@ -20,8 +32,51 @@ export default function Lapor() {
     const [agreedToAccuracy, setAgreedToAccuracy] = useState(false);
     const [agreedToRisk, setAgreedToRisk] = useState(false);
     const [submittedAt, setSubmittedAt] = useState(null);
+    const [reportTypes, setReportTypes] = useState(demoReportTypes);
+    const [reportTypesLoading, setReportTypesLoading] = useState(true);
+    const [reportTypesError, setReportTypesError] = useState('');
+    const [isDemoReportTypes, setIsDemoReportTypes] = useState(true);
+    const [selectedReportTypeId, setSelectedReportTypeId] = useState('');
+    const [incidentTime, setIncidentTime] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [submissionError, setSubmissionError] = useState('');
+    const [pendingEvidenceReportId, setPendingEvidenceReportId] = useState(null);
+    const [reportCreatedWithoutId, setReportCreatedWithoutId] = useState(false);
     const mapRef = useRef(null);
     const fileInputRef = useRef(null);
+    const submissionController = useRef(null);
+    const mountedRef = useRef(true);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        let isMounted = true;
+        mountedRef.current = true;
+
+        async function loadReportTypes() {
+            try {
+                const response = await getReportTypes({ signal: controller.signal });
+                const items = unwrapItems(response);
+                if (isMounted) {
+                    setReportTypes(items);
+                    setIsDemoReportTypes(false);
+                }
+            } catch (error) {
+                if (isMounted && error.name !== 'AbortError') {
+                    setReportTypesError(error.message || 'Jenis laporan gagal dimuat.');
+                }
+            } finally {
+                if (isMounted) setReportTypesLoading(false);
+            }
+        }
+
+        loadReportTypes();
+        return () => {
+            isMounted = false;
+            mountedRef.current = false;
+            controller.abort();
+            submissionController.current?.abort();
+        };
+    }, []);
 
     const selectFile = (file) => {
         if (!file) return;
@@ -45,6 +100,75 @@ export default function Lapor() {
         setDescription('');
         setSelectedFile(null);
         setFileError('');
+        setSelectedReportTypeId('');
+        setIncidentTime('');
+    };
+
+    const submitReport = async () => {
+        if (isDemoReportTypes) {
+            setSubmissionError('Jenis laporan yang dipilih berasal dari data demo. Pengiriman memerlukan opsi yang berhasil dimuat dari API.');
+            return;
+        }
+        if (reportCreatedWithoutId) {
+            setSubmissionError('Laporan telah dikirim, tetapi backend tidak memberikan ID laporan. Hubungi administrator agar bukti dapat ditautkan.');
+            return;
+        }
+        if (!selectedReportTypeId || !incidentTime || !zone || !specificLocation.trim()) {
+            setSubmissionError('Lengkapi jenis, waktu, dan lokasi kejadian sebelum mengirim laporan.');
+            return;
+        }
+
+        const reportType = reportTypes.find((type) => String(type.id_jenis) === selectedReportTypeId);
+        submissionController.current = new AbortController();
+        setSubmitting(true);
+        setSubmissionError('');
+        try {
+            let reportId = pendingEvidenceReportId;
+            let response = null;
+            if (!reportId) {
+                response = await createReport({
+                    id_jenis: Number(selectedReportTypeId),
+                    judul: `Laporan ${reportType?.nama_jenis ?? ''}`.trim().slice(0, 75),
+                    deskripsi_kejadian: description,
+                    lokasi_kejadian: `${zone} - ${specificLocation}`.slice(0, 150),
+                    waktu_kejadian: new Date(incidentTime).toISOString(),
+                    status: 'Menunggu',
+                    is_anonymous: true,
+                }, { signal: submissionController.current.signal });
+                reportId = response?.id_laporan ?? response?.data?.id_laporan;
+            }
+
+            if (selectedFile) {
+                if (!reportId) {
+                    setReportCreatedWithoutId(true);
+                    throw new Error('Laporan telah dikirim, tetapi API tidak mengembalikan id_laporan sehingga bukti tidak dapat ditautkan.');
+                }
+                const evidence = new FormData();
+                evidence.append('id_laporan', String(reportId));
+                evidence.append('file', selectedFile);
+                try {
+                    await createReportEvidence(evidence, { signal: submissionController.current.signal });
+                    setPendingEvidenceReportId(null);
+                } catch (evidenceError) {
+                    if (evidenceError.name !== 'AbortError') {
+                        setPendingEvidenceReportId(reportId);
+                        throw new Error(`Laporan ${reportId} tersimpan, tetapi unggahan bukti gagal: ${evidenceError.message}`);
+                    }
+                    throw evidenceError;
+                }
+            }
+
+            if (mountedRef.current) {
+                setSubmittedAt(response?.tanggal_laporan ? new Date(response.tanggal_laporan) : new Date());
+                setStep(4);
+            }
+        } catch (error) {
+            if (mountedRef.current && error.name !== 'AbortError') {
+                setSubmissionError(error.message || 'Laporan gagal dikirim.');
+            }
+        } finally {
+            if (mountedRef.current) setSubmitting(false);
+        }
     };
 
     const movePin = (event) => {
@@ -109,6 +233,12 @@ export default function Lapor() {
                         </div>
                     </section>
 
+                    {isDemoReportTypes && (
+                        <p role={reportTypesError ? 'alert' : 'status'} className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                            {reportTypesError ? `API jenis laporan belum tersedia (${reportTypesError}). Opsi yang ditampilkan adalah data demo; pengiriman laporan tetap memerlukan API.` : 'Opsi jenis laporan menggunakan data demo sambil mencoba memuat API.'}
+                        </p>
+                    )}
+
                     {step === 1 ? (
                         <Step1
                             description={description}
@@ -120,6 +250,13 @@ export default function Lapor() {
                             selectFile={selectFile}
                             clearDraft={clearDraft}
                             fileInputRef={fileInputRef}
+                            reportTypes={reportTypes}
+                            reportTypesLoading={reportTypesLoading}
+                            reportTypesError={reportTypesError}
+                            selectedReportTypeId={selectedReportTypeId}
+                            setSelectedReportTypeId={setSelectedReportTypeId}
+                            incidentTime={incidentTime}
+                            setIncidentTime={setIncidentTime}
                             onNext={() => setStep(2)}
                         />
                     ) : step === 2 ? (
@@ -145,10 +282,10 @@ export default function Lapor() {
                             agreedToRisk={agreedToRisk}
                             setAgreedToRisk={setAgreedToRisk}
                             onPrevious={() => setStep(2)}
-                            onSubmitSuccess={() => {
-                                setSubmittedAt(new Date());
-                                setStep(4);
-                            }}
+                            onSubmitSuccess={submitReport}
+                            submitting={submitting}
+                            submissionError={submissionError}
+                            retryingEvidence={Boolean(pendingEvidenceReportId)}
                         />
                     ) : (
                         <Step4 submittedAt={submittedAt} />

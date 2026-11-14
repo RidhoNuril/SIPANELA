@@ -2,7 +2,9 @@
 
 SIPANELA adalah aplikasi web untuk pelaporan dan pemantauan penanganan kasus terkait narkoba di lingkungan kampus Politeknik Negeri Lampung. Sistem menyediakan halaman publik untuk informasi dan pengiriman laporan, serta dashboard untuk melihat dan mengelola data pelaporan.
 
-> **Status proyek:** frontend saat ini merupakan prototipe. Data halaman dashboard masih berupa data contoh di sisi klien, dan belum terhubung ke API atau database. Perubahan data yang hanya disimpan dalam React state akan hilang saat halaman dimuat ulang.
+> **Status proyek:** frontend menggunakan service API untuk tabel/form yang sudah diintegrasikan. Backend dan kontrak endpoint belum tersedia di repository ini; `VITE_API_BASE_URL` dan rute di bawah merupakan asumsi yang perlu disesuaikan dengan backend.
+
+> **Kontrak API sementara:** service di `src/services/` menggunakan `VITE_API_BASE_URL` (default `/api`) dan rute REST berdasarkan ERD. List mengharapkan array atau `{ "data": [] }`; unggahan berkas dikirim sebagai `multipart/form-data`.
 
 ## Fitur
 
@@ -78,6 +80,8 @@ src/
 
 Konfigurasi Vite berada di `vite.config.js`; dependensi dan script npm berada di `package.json`.
 
+Untuk konfigurasi API lokal, salin `.env.example` menjadi `.env.local` dan isi `VITE_API_BASE_URL` jika backend tidak berada di `/api`. Jika tersedia, token `accessToken` dari `localStorage` akan dikirim sebagai Bearer token. Setiap service menerima opsi `{ signal }` agar halaman dapat membatalkan request saat dilepas.
+
 ## Rute aplikasi
 
 | URL | Halaman |
@@ -91,16 +95,35 @@ Konfigurasi Vite berada di `vite.config.js`; dependensi dan script npm berada di
 | `/dashboard` | Ringkasan dashboard |
 | `/dashboard/laporan` | Laporan masuk dan proses penanganan |
 | `/dashboard/rekapitulasi` | Rekapitulasi laporan |
-| `/dashboard/kategori` | Daftar kategori |
-| `/dashboard/kategori/tambah` | Formulir tambah kategori |
-| `/dashboard/kategori/:id/edit` | Formulir edit kategori |
+| `/dashboard/kategori` | Daftar kategori artikel |
+| `/dashboard/kategori/tambah` | Formulir tambah kategori artikel |
+| `/dashboard/kategori/:id/edit` | Formulir edit kategori artikel |
 | `/dashboard/artikel` | Daftar artikel |
 | `/dashboard/artikel/tambah` | Formulir tambah artikel |
 | `/dashboard/artikel/:id/edit` | Formulir edit artikel |
 
+Rute service sementara:
+
+| Entitas | Endpoint |
+| --- | --- |
+| Autentikasi | `POST /auth/login`, `POST /auth/register` |
+| Pengguna | `/users` |
+| Kategori artikel | `/kategori-artikel` |
+| Artikel | `/artikel` |
+| Jenis laporan | `/jenis-laporan` |
+| Laporan | `/laporan` |
+| Bukti pendukung | `/bukti-pendukung` |
+| Verifikasi laporan | `/verifikasi-laporan` |
+| Notifikasi | `/notifikasi` |
+
+Pelaporan publik mengirim laporan sebagai JSON, lalu mengirim bukti ke `/bukti-pendukung` sebagai `multipart/form-data` dengan `id_laporan` dan `file`. Karena itu, `POST /laporan` perlu mengembalikan `id_laporan` bila laporan menyertakan berkas. Login mengirim `email` atau `nomor_identitas` beserta `password`; registrasi mengirim `nama`, `nomor_identitas`, `email`, `no_hp`, dan `password`.
+
 ## Catatan pengembangan
 
 - Navigasi menggunakan `BrowserRouter`. Deployment perlu mengarahkan fallback URL aplikasi ke `index.html` agar rute selain `/` dapat dibuka langsung.
-- Dashboard dan rekapitulasi memakai data contoh yang didefinisikan di source.
-- Formulir dan perubahan status laporan belum mengirim data ke layanan backend; hubungkan ke API dan penyimpanan persisten sebelum digunakan untuk pelaporan operasional.
+- Daftar artikel, kategori, laporan, opsi jenis laporan, dan profil mempertahankan data demo sebagai fallback ketika API gagal. UI menandainya secara eksplisit; perubahan data demo tidak dianggap tersimpan ke server.
+- Pemanggilan HTTP menggunakan `fetch` bawaan browser melalui `src/services/`; Axios tidak menjadi dependency proyek.
+- Pastikan metode CRUD, nama endpoint, nama field unggahan, bentuk respons, dan enum status cocok dengan backend sebelum digunakan secara operasional.
+- Token respons login disimpan sebagai `accessToken` bila tersedia; data pengguna disimpan sebagai `user` untuk identifikasi verifikator.
+- `jabatan`, `status`, dan `status_verifikasi` harus memakai nilai enum yang diterima backend. Konfirmasi juga aturan apakah laporan anonim boleh tidak memiliki `id_user`.
 - Belum ada script test otomatis di `package.json`.
