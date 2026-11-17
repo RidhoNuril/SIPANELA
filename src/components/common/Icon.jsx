@@ -1,6 +1,7 @@
 import {
 	ArrowLeft,
 	ArrowRight,
+	Activity,
 	BadgeCheck,
 	Bell,
 	BookOpen,
@@ -25,9 +26,11 @@ import {
 	Filter,
 	Info,
 	Inbox,
+	Image,
 	IdCard,
 	Link,
 	LayoutDashboard,
+	LockKeyhole,
 	Mail,
 	MapPin,
 	Menu,
@@ -47,6 +50,9 @@ import {
 } from 'lucide-react';
 
 const iconComponents = {
+	activity: Activity,
+	image: Image,
+	'lock-keyhole': LockKeyhole,
 	'grid-3x3-gap-fill': LayoutDashboard,
 	'file-earmark-text': FileText,
 	'bar-chart-line-fill': ChartNoAxesColumnIncreasing,
