@@ -30,7 +30,7 @@ const articles = [
         publisher: 'Riset BNN & Polinela',
         title: 'Waspada Vape Berisi Zat Adiktif Narkotika: Fakta & Deteksi Awal',
         description: 'Kajian laboratorium mengenai penyalahgunaan cairan rokok elektrik sintetik yang mengandung zat psikotropika golongan baru yang membahayakan...',
-        image: 'https://images.unsplash.com/photo-1581093458791-9d42e3c7f9c1?auto=format&fit=crop&w=900&q=85',
+        image: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=85',
         imageAlt: 'Peralatan laboratorium untuk pengujian',
         imageClass: 'object-cover',
     },

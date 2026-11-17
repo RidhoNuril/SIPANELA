@@ -6,11 +6,11 @@ import Icon from '../../components/common/Icon';
 
 const heroImages = [
     {
-        src: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=1600',
+        src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNuVA_8s_RSw64TP8cOureZ-Hibw7FRRDlMvS8NMXTkUlCmXlJ5yAO46PC&s=10',
         alt: 'Gedung kampus'
     },
     {
-        src: 'https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=1600',
+        src: 'https://lampungpro.co/laravel-filemanager/photos/32/Polinela/IMG-20230429-WA0002.jpg',
         alt: 'Suasana lingkungan perguruan tinggi'
     }
 ];
