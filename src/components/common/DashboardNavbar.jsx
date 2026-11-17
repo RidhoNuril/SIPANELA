@@ -24,7 +24,7 @@ export default function DashboardNavbar() {
     }, []);
 
     return (
-        <header className="bg-white border-b border-gray-100 h-20 px-8 flex items-center justify-end sticky top-0 z-30">
+        <header className="bg-white border-b border-gray-100 h-20 px-8 flex items-center justify-end w-full fixed sm:sticky top-0 z-30">
             <div className="flex items-center space-x-4">
 
                 <div className="relative" ref={notifRef}>
@@ -38,7 +38,7 @@ export default function DashboardNavbar() {
 
                     {/* Pop-up Notification Dropdown */}
                     {isNotifOpen && (
-                        <div className="absolute -right-25 sm:right-0 mt-3 w-95 sm:w-105 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50 text-left">
+                        <div className="absolute -right-33 sm:right-0 mt-3 w-95 sm:w-105 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 z-50 text-left">
                             {/* Header Pemberitahuan */}
                             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                                 <div className="flex items-center space-x-2">
