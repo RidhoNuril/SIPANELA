@@ -28,7 +28,7 @@ const members = [
     { name: 'M. Yhoga Ismail Ibn Ibrahim, M.T.I.', role: 'Analisis Siber & Pengaduan Anonim', image: 18 },
     { name: 'dr. Tri Umiana Soleha', role: 'Pemeriksaan Medis & Triase Screening', image: 20 },
     { name: 'Nidia Putri, S.Pd.', role: 'Bimbingan Perkuliahan & Pencegahan Dini', image: 21 },
-    { name: 'Hanny Nurluthfiah Rianti, A.A.', role: 'Liaison Mahasiswa & Hubungan Masyarakat', image: 24, light: true },
+    { name: 'Hanny Nurluthfiah Rianti, A.A.', role: 'Liaison Mahasiswa & Hubungan Masyarakat', image: 24 },
     { name: 'M. Semario Ibrahim Habib Al Huda', role: 'Divisi Relawan & Peer Counselor', image: 33 },
     { name: 'Niabi Rahma Wati', role: 'Advokasi Gender & Perlindungan Saksi', image: 32 },
     { name: 'Mayang Atika Sekar Kirani', role: 'Sosialisasi Asrama & Unit Kegiatan', image: 25 },
@@ -41,26 +41,18 @@ const members = [
 
 function MemberCard({ member, leadership = false }) {
     return (
-        <article className={`flex min-h-51.25 flex-col items-center rounded-lg border p-4 text-center shadow-sm transition-transform hover:-translate-y-1 ${member.light
-                ? 'border-[#D8E2EA] bg-white text-[#0B3C65]'
-                : 'border-[#1B527C] bg-[#10436B] text-white'
-            }`}>
+        <article className="flex min-h-51.25 flex-col items-center rounded-lg border p-4 text-center shadow-sm transition-transform hover:-translate-y-1 hover:transition-all hover:border-[#D8E2EA] hover:bg-white hover:text-[#0B3C65] border-[#1B527C] bg-[#10436B] text-white">
             <img
                 src={`https://i.pravatar.cc/160?img=${member.image}`}
                 alt=""
                 loading="lazy"
                 className="mb-2 h-19 w-19 rounded-xl border-[3px] border-white/70 object-cover shadow-sm"
             />
-            <span className={`mb-2 rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide ${member.consultant
-                    ? 'bg-[#0D7A3A] text-white'
-                    : member.light
-                        ? 'bg-[#E8F0F6] text-[#42607A]'
-                        : 'bg-white/15 text-[#C4D7E6]'
-                }`}>
+            <span className="mb-2 rounded-full px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide bg-white/15">
                 {member.consultant ? 'Konselor / Fasilitator' : leadership ? ['Ketua', 'Wakil Ketua', 'Sekretaris'][leaders.indexOf(member)] : member.light ? 'Anggota Satgas' : 'Anggota'}
             </span>
             <h3 className="text-sm font-bold leading-snug">{member.name}</h3>
-            <p className={`mt-1 text-[10px] leading-relaxed ${member.light ? 'text-[#52657C]' : 'text-[#D0DFEA]'}`}>{member.role}</p>
+            <p className="mt-1 text-[10px] leading-relaxed">{member.role}</p>
             {member.light && (
                 <div className="mt-auto flex w-full justify-center gap-2 border-t border-[#EDF1F5] pt-3 text-[10px] text-[#73869A]" aria-label="Media sosial">
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#EEF2F5]">in</span>
