@@ -913,6 +913,91 @@ function StepsSection() {
     );
 }
 
+function FAQSection() {
+    const [activeQuestion, setActiveQuestion] = useState(0);
+    const questions = [
+        {
+            question: 'Apakah identitas saya sebagai pelapor benar-benar dirahasiakan?',
+            answer: 'Ya, kerahasiaan pelapor adalah prioritas utama SIPANELA. Seluruh laporan dikirim menggunakan enkripsi end-to-end. Sistem secara otomatis menghapus metadata seperti alamat IP, lokasi perangkat, dan detail file sebelum laporan masuk ke dashboard Satgas, serta melindungi pelapor sesuai ketentuan perlindungan saksi.'
+        },
+        {
+            question: 'Bagaimana jika saya tidak tahu nama pasti pelaku atau gedung kejadian?',
+            answer: 'Anda tetap dapat membuat laporan. Sampaikan informasi yang Anda ketahui, seperti ciri-ciri, perkiraan lokasi, waktu, atau detail lain yang dapat membantu Satgas menindaklanjuti laporan.'
+        },
+        {
+            question: 'Berapa lama waktu yang dibutuhkan Satgas untuk menindaklanjuti laporan?',
+            answer: 'Satgas akan meninjau laporan sesegera mungkin setelah laporan diterima. Waktu tindak lanjut dapat berbeda, bergantung pada kelengkapan informasi dan kebutuhan verifikasi.'
+        },
+        {
+            question: 'Apakah melaporkan kejadian ini akan berdampak pada nilai atau status akademik saya?',
+            answer: 'Tidak. Pelaporan dilakukan secara rahasia dan tidak dimaksudkan untuk memengaruhi nilai maupun status akademik pelapor.'
+        },
+        {
+            question: 'Bukti apa saja yang perlu saya lampirkan saat membuat laporan?',
+            answer: 'Lampirkan bukti yang Anda miliki, misalnya foto, dokumen, atau keterangan waktu dan lokasi kejadian. Bukti bersifat opsional, Anda tetap dapat mengirim laporan tanpa lampiran.'
+        }
+    ];
+
+    return (
+        <section className="bg-[#F4F8FB] px-6 py-16 md:py-20">
+            <div className="mx-auto max-w-4xl">
+                <div className="mx-auto mb-10 max-w-2xl text-center md:mb-12">
+                    <h2 className="mb-3 text-2xl font-bold leading-tight text-[#0B3C65] md:text-3xl">
+                        Pertanyaan yang Sering Diajukan (FAQ)
+                    </h2>
+                    <p className="text-sm leading-relaxed text-slate-500 md:text-base">
+                        Informasi penting mengenai kerahasiaan identitas, alur pelaporan, dan perlindungan saksi di lingkungan POLINELA.
+                    </p>
+                </div>
+
+                <div className="space-y-4">
+                    {questions.map((item, index) => {
+                        const isOpen = activeQuestion === index;
+
+                        return (
+                            <article
+                                key={item.question}
+                                className={`rounded-2xl border border-slate-200 bg-white px-5 py-4 md:px-6 ${isOpen ? 'border-b-5' : ''}`}
+                            >
+                                <h3>
+                                    <button
+                                        type="button"
+                                        className="flex w-full items-center justify-between gap-4 text-left"
+                                        aria-expanded={isOpen}
+                                        aria-controls={`faq-answer-${index}`}
+                                        onClick={() => setActiveQuestion(isOpen ? -1 : index)}
+                                    >
+                                        <span className="text-sm font-semibold leading-relaxed text-[#17466E] md:text-base">
+                                            {item.question}
+                                        </span>
+                                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${isOpen ? 'bg-[#E5F5FA] text-[#1A789B]' : 'bg-slate-100 text-[#17466E]'}`}>
+                                            <Icon
+                                                name="chevron-down"
+                                                className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                                            />
+                                        </span>
+                                    </button>
+                                </h3>
+                                <div
+                                    id={`faq-answer-${index}`}
+                                    aria-hidden={!isOpen}
+                                    className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+                                >
+                                    <div className="min-h-0 overflow-hidden">
+                                        <p className="mt-4 pr-2 text-sm leading-relaxed text-slate-500">
+                                            {item.answer}
+                                        </p>
+                                    </div>
+                                </div>
+                            </article>
+                        );
+                    })}
+                </div>
+            </div>
+        </section>
+    );
+}
+
 export default function Beranda() {
     const [activeImage, setActiveImage] = useState(0);
 
@@ -954,6 +1039,9 @@ export default function Beranda() {
 
                 {/* 3 Langkah Sederhana Melaporkan */}
                 <StepsSection />
+
+                {/* Pertanyaan yang Sering Diajukan */}
+                <FAQSection />
             </main>
 
             <Footer />
