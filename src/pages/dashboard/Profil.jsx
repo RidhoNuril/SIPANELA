@@ -72,29 +72,10 @@ export default function Profil() {
 	return (
 		<DashboardLayout>
 			<div className="space-y-5">
-				<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-					<div>
+					<div className="mb-5">
 						<h2 className="text-2xl font-bold tracking-tight text-[#0B3C65]">Profil Akun</h2>
 						<p className="mt-1 text-xs text-slate-500">Kelola identitas akun Anda.</p>
 					</div>
-					<div className="flex justify-end gap-2">
-						<button
-							type="button"
-							onClick={cancelChanges}
-							className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
-						>
-							Batal
-						</button>
-						<button
-							type="submit"
-							form="profile-form"
-							className="flex items-center gap-2 rounded-lg bg-[#0B3C65] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#0A2E4D]"
-						>
-							<Icon name="check" />
-							Simpan Perubahan Profil
-						</button>
-					</div>
-				</div>
 
 				<section className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:px-5">
 					<div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-sky-700 to-[#0B3C65] text-lg font-bold text-white shadow-sm">

@@ -14,6 +14,7 @@ import FormKategori from './pages/dashboard/kelola_kategori/FormKategori.jsx';
 import FormArtikel from './pages/dashboard/kelola_artikel/FormArtikel.jsx';
 import Rekapitulasi from './pages/dashboard/rekapitulasi/Rekapitulasi.jsx';
 import Profil from './pages/dashboard/Profil.jsx';
+import Status from './pages/dashboard/Status.jsx';
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
         <Route path="/tentang" element={<Tentang />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/dashboard/profil" element={<Profil />} />
+        <Route path="/dashboard/status" element={<Status />} />
         <Route path="/dashboard/laporan" element={<LaporanMasuk />} />
         <Route path="/dashboard/rekapitulasi" element={<Rekapitulasi />} />
         <Route path="/dashboard/kategori" element={<KelolaKategori />} />

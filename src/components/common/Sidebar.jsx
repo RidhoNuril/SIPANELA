@@ -10,6 +10,7 @@ const menuItems = [
 			{ to: '/dashboard', label: 'Dashboard', icon: 'grid-3x3-gap-fill' },
 			{ to: '/dashboard/laporan', label: 'Laporan Masuk', icon: 'file-earmark-text' },
 			{ to: '/dashboard/rekapitulasi', label: 'Rekapitulasi', icon: 'bar-chart-line-fill' },
+			{ to: '/dashboard/status', label: 'Status Laporan', icon: 'clock' },
 		]
 	},
 	{
@@ -33,7 +34,7 @@ export default function Sidebar() {
 		<>
 			{/* Mobile Toggle Button */}
 			<button
-				className="sm:hidden fixed top-4 left-6 z-38 p-2 px-3 text-black"
+				className="lg:hidden fixed top-4 left-6 z-38 p-2 px-3 text-black"
 				onClick={() => setIsOpen(!isOpen)}
 			>
 				{isOpen ? (
@@ -46,12 +47,12 @@ export default function Sidebar() {
 			{/* Overlay for mobile */}
 			{isOpen && (
 				<div
-					className="sm:hidden fixed inset-0 bg-black/25 z-39"
+					className="lg:hidden fixed inset-0 bg-black/25 z-39"
 					onClick={() => setIsOpen(false)}
 				></div>
 			)}
 
-			<aside className={`fixed sm:static min-h-screen inset-y-0 top-0 left-0 z-40 w-72 bg-white border-r border-gray-100 p-4 flex flex-col justify-between shrink-0 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} sm:translate-x-0`}>
+			<aside className={`fixed lg:static min-h-screen inset-y-0 top-0 left-0 z-40 w-72 bg-white border-r border-gray-100 p-4 flex flex-col justify-between shrink-0 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
 				<div className="space-y-8">
 					{/* Logo Section */}
 					<Link to="/" className="flex items-center space-x-3 mb-8 px-2">
