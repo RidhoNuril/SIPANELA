@@ -7,7 +7,7 @@ function RegisterField({ id, label, children }) {
     return (
         <div className="mb-5">
             <label htmlFor={id} className="mb-2 block text-sm font-medium text-[#20242A]">{label}</label>
-            <span className="flex h-10 items-center gap-2 rounded-full border border-[#E6E6E6] bg-white/80 px-3 shadow-[0_3px_7px_rgba(0,0,0,0.12)] focus-within:ring-2 focus-within:ring-[#0B3C65]/20">
+            <span className="flex items-center gap-2 rounded-full border border-[#E6E6E6] bg-[#F9FAFB]/70 px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#0B3C65]/20">
                 {children}
             </span>
         </div>
@@ -43,16 +43,16 @@ export default function Register() {
                 <span className="text-[11px] font-semibold text-[#17212B] sm:text-xs">Politeknik Negeri Lampung</span>
             </Link>
 
-            <section className="relative z-10 w-full rounded-4xl border border-white/80 bg-white/75 px-8 py-10 shadow-[0_18px_55px_rgba(15,35,53,0.16)] backdrop-blur-xl sm:max-w-120 sm:px-9 sm:py-12">
+            <section className="relative z-10 w-full rounded-4xl border border-white/80 bg-white/75 px-8 py-10 shadow-[0_18px_55px_rgba(15,35,53,0.16)] backdrop-blur-xl sm:max-w-120 sm:px-8 sm:py-12">
                 <div className="flex flex-col items-center text-center">
-                    <img src={Logo} alt="Logo SIPANELA" className="h-25 w-25 mb-3" />
-                    <p className="mt-2 text-xs leading-snug text-[#555B63]">
-                        Registrasi Pengguna Sistem Pelaporan Anti Narkoba
+                    <img src={Logo} alt="Logo SIPANELA" className="w-32 h-33 mb-4" />
+                    <h1 className="text-[32px] font-extrabold tracking-wide text-[#001D33] mb-3">DAFTAR AKUN</h1>
+                    <p className="text-xs sm:text-sm leading-relaxed text-[#555B63]">
+                        Registrasi Pengguna Sistem Pelaporan <br></br>Anti Narkoba
                     </p>
-                    <h1 className="mt-2 text-lg font-extrabold tracking-wide text-[#102D43]">DAFTAR AKUN</h1>
                 </div>
 
-                <form className="mt-3 space-y-2" onSubmit={handleSubmit}>
+                <form className="mt-7 space-y-2" onSubmit={handleSubmit}>
                     <RegisterField id="identityNumber" label="Nomor Induk Mahasiswa (NIM) / NIP">
                         <input
                             id="identityNumber"
@@ -145,14 +145,13 @@ export default function Register() {
 
                     <button
                         type="submit"
-                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-full bg-[#0D416A] text-md sm:text-lg font-semibold text-white shadow-[0_3px_6px_rgba(0,0,0,0.18)] transition-colors hover:bg-[#092F4D]"
+                        className="flex h-12 w-full items-center justify-center gap-1.5 rounded-full bg-[#0D416A] font-semibold text-white transition-colors hover:bg-[#092F4D]"
                     >
                         Daftar Sekarang
-                        <Icon name="arrow-right-outline" className="h-4 w-4" />
                     </button>
                 </form>
 
-                <p className="mt-3 text-center text-xs text-[#30343A]">
+                <p className="mt-6 text-center text-xs text-[#30343A]">
                     Sudah Memiliki Akun?{' '}
                     <Link to="/login" className="font-bold text-[#102D43] hover:underline">Masuk</Link>
                 </p>
