@@ -165,17 +165,17 @@ function EdukasiNarkobaSection() {
     const tabs = [
         { id: 'jenis', label: 'Jenis-Jenis Narkoba' },
         { id: 'pencegah', label: 'Cara Mencegah' },
-        { id: 'gejala', label: 'Kenali Gejala' },
+        { id: 'gejala', label: 'Ciri Ciri Pemakai' },
         { id: 'dampak', label: 'Dampak Narkoba' }
     ];
 
     return (
-        <section id="edukasi" className="bg-slate-50 py-16">
+        <section id="edukasi" className="bg-white py-16">
             <div className="max-w-7xl mx-auto space-y-8 px-6">
 
                 {/* Header Utama */}
                 <div className="space-y-3">
-                    <h2 className="text-3xl font-bold text-slate-900 tracking-tight">
+                    <h2 className="text-3xl font-bold text-[#0B3C65] tracking-tight">
                         Edukasi & Pencegahan Narkoba
                     </h2>
                     <p className="text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
@@ -204,7 +204,7 @@ function EdukasiNarkobaSection() {
                 {activeTab === 'jenis' && (
                     <div className="space-y-8 animate-fadeIn">
                         {/* Sub-Header Section */}
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="hidden flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900">Jenis-Jenis Narkoba</h3>
                                 <p className="text-slate-500 text-sm">
@@ -220,10 +220,6 @@ function EdukasiNarkobaSection() {
                         {/* Banner Biru Tua */}
                         <div className="bg-[#0B3C65] rounded-2xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                             <div className="space-y-2 relative z-10">
-                                <div className="inline-flex items-center gap-1.5 bg-white/10 text-white px-3 py-1 rounded-full text-xs font-medium border border-white/10 backdrop-blur-xs">
-                                    <span>🛡️</span>
-                                    <span>Kategori Hukum & Medis</span>
-                                </div>
                                 <h4 className="text-xl sm:text-2xl font-bold tracking-tight">
                                     Penggolongan Narkotika & Zat Terlarang
                                 </h4>
@@ -232,18 +228,64 @@ function EdukasiNarkobaSection() {
                                 </p>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-2 relative z-10">
-                                <span className="bg-white/10 text-white px-3.5 py-1.5 rounded-full text-xs font-medium border border-white/10 backdrop-blur-xs">
-                                    • 3 Golongan Utama
-                                </span>
-                                <span className="bg-rose-500/20 text-rose-200 px-3.5 py-1.5 rounded-full text-xs font-medium border border-rose-500/30 backdrop-blur-xs">
-                                    • Tinggi Risiko
-                                </span>
+                            <div className="hidden flex-wrap items-center gap-2 relative z-10" />
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.25fr] gap-10 items-center">
+                            <div className="relative min-h-95 sm:min-h-105">
+                                <img
+                                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85"
+                                    alt="Mahasiswa memahami dampak narkoba"
+                                    className="absolute left-0 top-0 h-85 sm:h-97.5 w-[78%] rounded-2xl object-cover"
+                                />
+                                <img
+                                    src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=700&q=85"
+                                    alt="Mahasiswa berdiskusi di lingkungan kampus"
+                                    className="absolute right-0 bottom-0 h-38.75 w-[58%] rounded-xl border-8 border-slate-50 object-cover shadow-lg"
+                                />
+                            </div>
+
+                            <div className="space-y-5">
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500"><Icon name="ban" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Golongan I (Sangat Berbahaya & Tanpa Terapi)</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Tidak digunakan untuk terapi medis, daya adiksi sangat tinggi, dan pemakaiannya berisiko tinggi.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-500 font-medium">Contoh Zat:</span> Ganja (Cannabis), Sabu (Metamfetamin), Ekstasi (MDMA), Kokain.</p>
+                                    </div>
+                                </article>
+
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500"><Icon name="file-text" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Golongan II (Potensi Ketergantungan Tinggi)</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Dapat digunakan untuk terapi medis dan penelitian hanya sebagai pilihan terakhir.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-500 font-medium">Contoh Zat:</span> Morfin, Petidin, Fentanil, Metadon.</p>
+                                    </div>
+                                </article>
+
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500"><Icon name="clipboard-list" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Golongan III (Potensi Ketergantungan Ringan)</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Banyak digunakan dalam pengobatan dan pelayanan kesehatan, tetapi tetap berisiko ketergantungan.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-500 font-medium">Contoh Zat:</span> Kodein, Buprenorfin, Etilmorfin.</p>
+                                    </div>
+                                </article>
+
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-500"><Icon name="clock-3" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Zat Psikoaktif Baru (NPS) & Obat Keras</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Zat sintetis beracun yang sering disamarkan sebagai produk legal, serta obat keras yang digunakan tanpa indikasi klinis.</p>
+                                        <p className="mt-1 text-xs text-slate-700 leading-relaxed"><span className="text-sky-500 font-medium">Target Edukasi:</span> Waspadai peredaran terselubung di lingkungan kampus POLINELA.</p>
+                                    </div>
+                                </article>
                             </div>
                         </div>
 
                         {/* Grid 3 Kartu Golongan Narkoba */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="hidden grid-cols-1 md:grid-cols-3 gap-6">
                             {/* GOLONGAN I */}
                             <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
                                 <div className="space-y-4">
@@ -370,6 +412,54 @@ function EdukasiNarkobaSection() {
                 {/* 2. TAB: CARA MENCEGAH */}
                 {activeTab === 'pencegah' && (
                     <div className="space-y-8 animate-fadeIn">
+                        <div className="bg-[#0B3C65] rounded-2xl p-6 sm:p-8 text-white">
+                            <h4 className="text-xl font-bold">Bangun Benteng Pertahanan Diri</h4>
+                            <p className="mt-2 text-sm text-blue-100">Strategi membentengi civitas akademika dari ancaman dan bujukan zat adiktif.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.25fr] gap-10 items-center">
+                            <div className="relative min-h-95 sm:min-h-105">
+                                <img
+                                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85"
+                                    alt="Mahasiswa bekerja sama dalam kegiatan kampus"
+                                    className="absolute left-0 top-0 h-85 sm:h-97.5 w-[78%] rounded-2xl object-cover"
+                                />
+                                <img
+                                    src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=85"
+                                    alt="Mahasiswa beraktivitas bersama"
+                                    className="absolute right-0 bottom-0 h-38.75 w-[58%] rounded-xl border-8 border-white object-cover shadow-lg"
+                                />
+                            </div>
+
+                            <div className="space-y-5">
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600"><Icon name="shield-check" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Penguatan Diri & Mental</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Kenali risiko narkoba bagi kesehatan dan masa depan. Kelola stres dengan aktivitas produktif, olahraga, serta hobi positif.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Tips Tangguh:</span> Katakan “tidak” secara tegas pada tawaran zat terlarang.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600"><Icon name="users-round" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Selektif Memilih Teman</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Hindari pergaulan yang menormalisasi konsumsi zat terlarang. Bangun relasi positif yang saling mengingatkan.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Tips Lingkungan:</span> Tinggalkan kelompok yang memberi tekanan negatif.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600"><Icon name="graduation-cap" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Partisipasi Kampus Bebas Narkoba</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Ikuti sosialisasi, seminar P4GN, dan skrining kampus. Laporkan indikasi peredaran melalui kanal SIPANELA.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Komitmen POLINELA:</span> Kerahasiaan pelapor dilindungi satgas resmi institusi.</p>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div className="hidden">
                         {/* Sub-Header Section */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
@@ -516,12 +606,62 @@ function EdukasiNarkobaSection() {
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 )}
 
                 {/* 3. TAB: KENALI GEJALA */}
                 {activeTab === 'gejala' && (
                     <div className="space-y-8 animate-fadeIn">
+                        <div className="bg-[#0B3C65] rounded-2xl p-6 sm:p-8 text-white">
+                            <h4 className="text-xl font-bold">Kenali Gejala Sejak Awal</h4>
+                            <p className="mt-2 text-sm text-blue-100">Deteksi dini dapat membantu seseorang memperoleh dukungan yang tepat.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.25fr] gap-10 items-center">
+                            <div className="relative min-h-95 sm:min-h-105">
+                                <img
+                                    src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=85"
+                                    alt="Mahasiswa dalam suasana kampus"
+                                    className="absolute left-0 top-0 h-85 sm:h-97.5 w-[78%] rounded-2xl object-cover"
+                                />
+                                <img
+                                    src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=85"
+                                    alt="Teman sebaya saling mendukung"
+                                    className="absolute right-0 bottom-0 h-38.75 w-[58%] rounded-xl border-8 border-white object-cover shadow-lg"
+                                />
+                            </div>
+
+                            <div className="space-y-5">
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500"><Icon name="heart-pulse" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Perubahan Fisik</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Perhatikan perubahan kondisi tubuh, seperti mata merah atau pupil yang tampak tidak biasa, penurunan berat badan, tremor, dan pola tidur yang berubah.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600"><Icon name="brain" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Perubahan Perilaku & Emosi</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Perubahan suasana hati yang tajam, kecemasan, sikap tertutup, atau perubahan kebiasaan sehari-hari dapat menjadi tanda untuk memberikan perhatian.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600"><Icon name="users-round" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Perubahan Sosial & Akademik</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Menarik diri dari teman, sering tidak hadir, atau kesulitan menjalankan tanggung jawab akademik dapat menjadi alasan untuk menyapa dan menawarkan bantuan.</p>
+                                    </div>
+                                </article>
+                                <div className="flex items-start gap-3 rounded-xl bg-sky-50 border border-sky-100 p-4 text-xs leading-relaxed text-slate-700">
+                                    <Icon name="info-circle" className="mt-0.5 h-4 w-4 shrink-0 text-sky-600" />
+                                    <p>Gejala tersebut bukan diagnosis pasti. Sampaikan kepedulian tanpa menghakimi dan arahkan untuk berkonsultasi dengan tenaga profesional.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="hidden">
                         {/* Sub-Header Section */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
@@ -636,12 +776,61 @@ function EdukasiNarkobaSection() {
                                 </div>
                             </div>
                         </div>
+                        </div>
                     </div>
                 )}
 
                 {/* 4. TAB: DAMPAK NARKOBA */}
                 {activeTab === 'dampak' && (
                     <div className="space-y-8 animate-fadeIn">
+                        <div className="bg-[#0B3C65] rounded-2xl p-6 sm:p-8 text-white">
+                            <h4 className="text-xl font-bold">Pahami Risiko Sebelum Terlambat</h4>
+                            <p className="mt-2 text-sm text-blue-100">Penyalahgunaan narkoba dapat berdampak pada kesehatan, relasi, pendidikan, dan masa depan.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.25fr] gap-10 items-center">
+                            <div className="relative min-h-95 sm:min-h-105">
+                                <img
+                                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=700&q=85"
+                                    alt="Mahasiswa merenungkan pilihan dan masa depan"
+                                    className="absolute left-0 top-0 h-85 sm:h-97.5 w-[78%] rounded-2xl object-cover"
+                                />
+                                <img
+                                    src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=700&q=85"
+                                    alt="Mahasiswa belajar bersama"
+                                    className="absolute right-0 bottom-0 h-38.75 w-[58%] rounded-xl border-8 border-white object-cover shadow-lg"
+                                />
+                            </div>
+
+                            <div className="space-y-5">
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500"><Icon name="heart-pulse" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Dampak Fisik & Kesehatan</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Dapat mengganggu fungsi otak dan organ vital, menurunkan konsentrasi, serta meningkatkan risiko kondisi kesehatan yang serius.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Dukungan:</span> Pemulihan dan penanganan sebaiknya dilakukan bersama tenaga kesehatan.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600"><Icon name="brain" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Dampak Psikologis & Sosial</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Kecemasan, perubahan suasana hati, dan ketergantungan dapat memengaruhi hubungan dengan keluarga, teman, dan lingkungan sekitar.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Ingat:</span> Dukungan tanpa stigma membantu seseorang mencari pertolongan.</p>
+                                    </div>
+                                </article>
+                                <article className="flex items-start gap-4">
+                                    <div className="w-11 h-11 shrink-0 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-600"><Icon name="scale" className="w-5 h-5" /></div>
+                                    <div>
+                                        <h5 className="text-base font-bold text-slate-900">Dampak Hukum & Akademik</h5>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed">Penyalahgunaan dan peredaran narkotika memiliki konsekuensi hukum berdasarkan peraturan yang berlaku, serta dapat mengganggu proses studi dan rencana masa depan.</p>
+                                        <p className="mt-1 text-xs text-slate-600 leading-relaxed"><span className="text-sky-600 font-medium">Sikap kampus:</span> Patuhi aturan POLINELA dan manfaatkan kanal bantuan yang tersedia.</p>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+
+                        <div className="hidden">
                         {/* Sub-Header Section */}
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div>
@@ -781,6 +970,7 @@ function EdukasiNarkobaSection() {
                                     </p>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
                 )}
