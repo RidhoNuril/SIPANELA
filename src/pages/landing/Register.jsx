@@ -53,6 +53,19 @@ export default function Register() {
                 </div>
 
                 <form className="mt-7 space-y-2" onSubmit={handleSubmit}>
+                    <RegisterField id="namaLengkap" label="Nama Lengkap">
+                        <input
+                            id="namaLengkap"
+                            name="namaLengkap"
+                            type="text"
+                            autoComplete="namalengkap"
+                            required
+                            placeholder="Contoh: Bagus Dwi Pra"
+                            className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-[#929292]"
+                        />
+                        <Icon name="id-card" className="h-4 w-4 shrink-0 text-[#858585]" />
+                    </RegisterField>
+
                     <RegisterField id="identityNumber" label="Nomor Induk Mahasiswa (NIM) / NIP">
                         <input
                             id="identityNumber"

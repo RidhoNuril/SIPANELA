@@ -9,18 +9,15 @@ import Step4 from './Step4.jsx';
 export default function Lapor() {
     const [step, setStep] = useState(1);
     const [description, setDescription] = useState('');
+    const [dateTime, setDateTime] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileError, setFileError] = useState('');
     const [isDragging, setIsDragging] = useState(false);
     const [zone, setZone] = useState('');
     const [specificLocation, setSpecificLocation] = useState('');
-    const [pinPosition, setPinPosition] = useState({ x: 50, y: 48 });
-    const [coordinates, setCoordinates] = useState({ latitude: -5.35824, longitude: 105.23142 });
-    const [locationError, setLocationError] = useState('');
     const [agreedToAccuracy, setAgreedToAccuracy] = useState(false);
     const [agreedToRisk, setAgreedToRisk] = useState(false);
     const [submittedAt, setSubmittedAt] = useState(null);
-    const mapRef = useRef(null);
     const fileInputRef = useRef(null);
 
     const selectFile = (file) => {
@@ -45,43 +42,6 @@ export default function Lapor() {
         setDescription('');
         setSelectedFile(null);
         setFileError('');
-    };
-
-    const movePin = (event) => {
-        const bounds = mapRef.current?.getBoundingClientRect();
-        if (!bounds) return;
-
-        const x = Math.min(96, Math.max(4, ((event.clientX - bounds.left) / bounds.width) * 100));
-        const y = Math.min(90, Math.max(10, ((event.clientY - bounds.top) / bounds.height) * 100));
-        setPinPosition({ x, y });
-        setCoordinates({
-            latitude: -5.35824 + (48 - y) * 0.0001,
-            longitude: 105.23142 + (x - 50) * 0.0001
-        });
-    };
-
-    const locateCurrentPosition = () => {
-        setLocationError('');
-        if (!navigator.geolocation) {
-            setLocationError('Browser ini tidak mendukung fitur lokasi perangkat.');
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            ({ coords: currentPosition }) => {
-                setCoordinates({ latitude: currentPosition.latitude, longitude: currentPosition.longitude });
-                setPinPosition({ x: 50, y: 48 });
-            },
-            (error) => {
-                const messages = {
-                    1: 'Izin lokasi ditolak. Anda tetap dapat menggeser pin secara manual.',
-                    2: 'Lokasi perangkat tidak tersedia. Coba lagi atau geser pin secara manual.',
-                    3: 'Permintaan lokasi terlalu lama. Coba lagi atau geser pin secara manual.'
-                };
-                setLocationError(messages[error.code] || 'Lokasi perangkat gagal didapatkan. Geser pin secara manual.');
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
-        );
     };
 
     return (
@@ -113,6 +73,8 @@ export default function Lapor() {
                         <Step1
                             description={description}
                             setDescription={setDescription}
+                            dateTime={dateTime}
+                            setDateTime={setDateTime}
                             selectedFile={selectedFile}
                             fileError={fileError}
                             isDragging={isDragging}
@@ -128,13 +90,6 @@ export default function Lapor() {
                             setZone={setZone}
                             specificLocation={specificLocation}
                             setSpecificLocation={setSpecificLocation}
-                            mapRef={mapRef}
-                            locateCurrentPosition={locateCurrentPosition}
-                            locationError={locationError}
-                            movePin={movePin}
-                            pinPosition={pinPosition}
-                            setPinPosition={setPinPosition}
-                            coordinates={coordinates}
                             onPrevious={() => setStep(1)}
                             onNext={() => setStep(3)}
                         />

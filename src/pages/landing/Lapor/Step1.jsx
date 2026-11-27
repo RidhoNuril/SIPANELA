@@ -8,6 +8,8 @@ import {
 export default function Step1({
     description,
     setDescription,
+    setDateTime,
+    dateTime,
     selectedFile,
     fileError,
     isDragging,
@@ -64,6 +66,23 @@ export default function Step1({
                         onChange={(event) => setDescription(event.target.value)}
                         placeholder="Contoh: Terlihat aktivitas mencurigakan berupa transaksi paket kecil berulang pada pukul 23:00 WIB di gang&#10;sempit..."
                         className="mt-2 h-36 w-full resize-y rounded-lg border border-[#DCE5EE] px-3 py-3 text-sm leading-relaxed text-[#263D58] outline-none placeholder:text-[#91A3B8] focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15 sm:h-40"
+                    />
+                </div>
+
+                <div className="mt-6">
+                    <div className="flex items-center justify-between gap-3">
+                        <label htmlFor="dateTime" className="text-sm font-semibold text-[#172B45]">
+                            Waktu Kejadian <span className="text-[#E54646]">*</span>
+                        </label>
+                    </div>
+                    <input
+                    id="event-datetime"
+                    type="datetime-local"
+                    value={dateTime}
+                    onChange={(e) => setDateTime(e.target.value)}
+                    min="2026-01-01T00:00"
+                    max="2026-12-31T23:59"
+                    className="mt-2 w-full resize-y rounded-lg border border-[#DCE5EE] px-3 py-3 text-sm leading-relaxed text-[#263D58] outline-none placeholder:text-[#91A3B8] focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15"
                     />
                 </div>
 

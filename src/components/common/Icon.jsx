@@ -55,7 +55,8 @@ import {
 	UserRound,
 	UsersRound,
 	X,
-	LogOut
+	LogOut,
+	SquareCheckBig
 } from 'lucide-react';
 
 const iconComponents = {
@@ -99,6 +100,7 @@ const iconComponents = {
 	'x-lg': X,
 	'clipboard2-check': ClipboardCheck,
 	unlock: Unlock,
+	'square-check' : SquareCheckBig,
 	'link-45deg': Link,
 	'check-lg': Check,
 	'record-circle': Circle,

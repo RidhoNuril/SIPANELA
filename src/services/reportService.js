@@ -6,39 +6,39 @@ const USE_MOCK = true;
 export const INITIAL_REPORTS = [
 	{
 		idTiket: '#SPN-2026-089',
-		pelapor: 'Anonim (Mahasiswa)',
-		kategori: 'Dugaan Narkotika',
+		pelapor: 'Bagus Dwi',
+		kategori: 'Pengedaran Narkotika',
 		lokasi: 'Area Parkir Belakang Gedung Sakura',
 		waktu: '24 Okt 2024, 21:15 WIB',
 		status: 'Selesai',
 	},
 	{
 		idTiket: '#SPN-2026-088',
-		pelapor: 'Anonim (Tendik)',
-		kategori: 'Dugaan Narkotika',
+		pelapor: 'Zaki Ridho',
+		kategori: 'Pengedaran Narkotika',
 		lokasi: 'Gazebo SFS',
 		waktu: '24 Okt 2024, 19:40 WIB',
 		status: 'Investigasi',
 	},
 	{
 		idTiket: '#SPN-2026-087',
-		pelapor: 'Anonim (Mahasiswa)',
-		kategori: 'Transaksi Obat',
+		pelapor: 'Ridho Nuril',
+		kategori: 'Penyalahgunaan Narkotika',
 		lokasi: 'Sekitar Kantin GKB',
 		waktu: '23 Okt 2024, 14:10 WIB',
 		status: 'Verifikasi',
 	},
 	{
 		idTiket: '#SPN-2026-086',
-		pelapor: 'Petugas Keamanan',
-		kategori: 'Transaksi Obat',
+		pelapor: 'I Made Dirga',
+		kategori: 'Penyalahgunaan Narkotika',
 		lokasi: 'Lahan Peternakan Politeknik',
 		waktu: '22 Okt 2024, 22:50 WIB',
 		status: 'Menunggu',
 	},
 	{
 		idTiket: '#SPN-2026-085',
-		pelapor: 'Anonim (Warga Kampus)',
+		pelapor: 'Ikhlasul Amal',
 		kategori: 'Pemakai',
 		lokasi: 'Lobi Gedung Direktorat Lt. 1',
 		waktu: '21 Okt 2024, 08:30 WIB',
@@ -47,7 +47,7 @@ export const INITIAL_REPORTS = [
 	{
 		idTiket: '#SPN-2026-084',
 		pelapor: 'Mahasiswa A',
-		kategori: 'Transaksi Obat',
+		kategori: 'Penyalahgunaan Narkotika',
 		lokasi: 'Koridor Gedung Kuliah Bersama',
 		waktu: '20 Okt 2024, 10:00 WIB',
 		status: 'Selesai',
@@ -55,12 +55,18 @@ export const INITIAL_REPORTS = [
 	{
 		idTiket: '#SPN-2026-083',
 		pelapor: 'Dosen B',
-		kategori: 'Zat Adiktif Lainnya',
+		kategori: 'Lainnya',
 		lokasi: 'Kantin Fakultas Teknik',
 		waktu: '19 Okt 2024, 13:20 WIB',
 		status: 'Investigasi',
 	},
-];
+].map((report) => ({
+	...report,
+	detail: '',
+	petugas: '',
+	hasilAkhir: '',
+	lampiran: null,
+}));
 
 export const REPORT_ARCHIVES = [
 	{ period: 'Maret 2026', year: 'Tahun 2026', month: 'Oktober', status: 'Terkini & Berjalan', cases: '982 Aduan Terverifikasi', size: '3,4 MB', note: 'Diperbarui 3 jam lalu' },
@@ -72,10 +78,9 @@ export const REPORT_ARCHIVES = [
 
 export const REPORT_FILTER_CATEGORIES = [
 	'Semua Kategori',
-	'Transaksi Obat',
-	'Pemakai',
-	'Zat Adiktif Lainnya',
-	'Dugaan Narkotika',
+	'Penyalahgunaan Narkotika',
+	'Pengedaran Narkotika',
+	'Minuman Keras'
 ];
 
 export const REPORT_FORM_CATEGORIES = [

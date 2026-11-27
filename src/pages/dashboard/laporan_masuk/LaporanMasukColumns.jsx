@@ -63,7 +63,7 @@ const columns = (onVerify) => [
 					onClick={() => onVerify(info.row.original)}
 					className="px-5 py-1.5 bg-[#0B3C65] hover:bg-blue-900 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
 				>
-					Verifikasi
+					Buka Laporan
 				</button>
 			</div>
 		),

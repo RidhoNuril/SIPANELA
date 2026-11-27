@@ -11,6 +11,7 @@ const menuItems = [
 			{ to: '/dashboard/laporan', label: 'Laporan Masuk', icon: 'file-earmark-text' },
 			{ to: '/dashboard/rekapitulasi', label: 'Rekapitulasi', icon: 'bar-chart-line-fill' },
 			{ to: '/dashboard/status', label: 'Status Laporan', icon: 'clock' },
+			{ to: '/dashboard/survey', label: 'Survey Kepuasan', icon: 'square-check' },
 		]
 	},
 	{
