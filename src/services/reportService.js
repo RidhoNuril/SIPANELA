@@ -84,11 +84,15 @@ export const REPORT_FILTER_CATEGORIES = [
 ];
 
 export const REPORT_FORM_CATEGORIES = [
-	'Peredaran Narkotika',
+	'Pengedaran Narkotika',
 	'Penyalahgunaan Narkotika',
-	'Penyalahgunaan Zat Adiktif',
+	'Minuman Keras',
 	'Lainnya',
 ];
+
+export function getReportFormCategories() {
+	return withMockDelay(REPORT_FORM_CATEGORIES);
+}
 
 export function getIncomingReports() {
 	return USE_MOCK
@@ -102,11 +106,6 @@ export function getReportFilterCategories() {
 		: api.get('/reports/categories').then((response) => response.data);
 }
 
-export function getReportFormCategories() {
-	return USE_MOCK
-		? withMockDelay(REPORT_FORM_CATEGORIES)
-		: api.get('/reports/categories').then((response) => response.data);
-}
 
 export function getReportArchives() {
 	return USE_MOCK

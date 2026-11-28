@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Icon from '../../../components/common/Icon';
+import DashboardLayout from '../../../components/common/DashboardLayout';
+import { getIncomingReports, updateReport } from '../../../services/reportService.js';
 
 const reportStatuses = ['Menunggu', 'Verifikasi', 'Investigasi', 'Selesai', 'Di Tolak'];
 
@@ -47,30 +50,121 @@ function FormSectionTitle({ icon, title, description, trailing }) {
 	);
 }
 
-export default function DetailLaporanMasuk({ report, onClose, onSave }) {
-	const [status, setStatus] = useState(report.status ?? 'Menunggu');
-	const [petugas, setPetugas] = useState(report.petugas ?? '');
-	const [detail, setDetail] = useState(report.detail ?? '');
-	const [hasilAkhir, setHasilAkhir] = useState(report.hasilAkhir ?? '');
-	const [lampiran, setLampiran] = useState(report.lampiran ?? null);
+export default function DetailLaporanMasuk() {
+	const { ticketId } = useParams();
+	const location = useLocation();
+	const navigate = useNavigate();
+	const routeReport = location.state?.report;
+	const [report, setReport] = useState(
+		routeReport?.idTiket === ticketId ? routeReport : null,
+	);
+	const [status, setStatus] = useState(routeReport?.status ?? 'Menunggu');
+	const [petugas, setPetugas] = useState(routeReport?.petugas ?? '');
+	const [detail, setDetail] = useState(routeReport?.detail ?? '');
+	const [hasilAkhir, setHasilAkhir] = useState(routeReport?.hasilAkhir ?? '');
+	const [lampiran, setLampiran] = useState(routeReport?.lampiran ?? null);
+	const [loadedTicketId, setLoadedTicketId] = useState(
+		routeReport?.idTiket === ticketId ? ticketId : null,
+	);
+	const isLoading = loadedTicketId !== ticketId;
+	const [isSaving, setIsSaving] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
 	const previewUrl = useMemo(() => {
 		if (!lampiran) return '';
 		return typeof lampiran === 'string' ? lampiran : URL.createObjectURL(lampiran);
 	}, [lampiran]);
 
 	useEffect(() => {
+		if (routeReport?.idTiket === ticketId) {
+			return;
+		}
+
+		let isActive = true;
+		getIncomingReports()
+			.then((reports) => {
+				if (!isActive) return;
+				const foundReport = reports.find((item) => item.idTiket === ticketId);
+				if (!foundReport) {
+					setErrorMessage('Laporan tidak ditemukan.');
+					setLoadedTicketId(ticketId);
+					return;
+				}
+				setReport(foundReport);
+				setStatus(foundReport.status ?? 'Menunggu');
+				setPetugas(foundReport.petugas ?? '');
+				setDetail(foundReport.detail ?? '');
+				setHasilAkhir(foundReport.hasilAkhir ?? '');
+				setLampiran(foundReport.lampiran ?? null);
+			})
+			.catch((error) => {
+				if (isActive) {
+					console.error('Gagal memuat detail laporan.', error);
+					setErrorMessage('Detail laporan gagal dimuat. Silakan coba kembali.');
+					setLoadedTicketId(ticketId);
+				}
+			})
+			.finally(() => {
+				if (isActive) setLoadedTicketId(ticketId);
+			});
+
+		return () => {
+			isActive = false;
+		};
+	}, [routeReport, ticketId]);
+
+	useEffect(() => {
 		if (!lampiran || typeof lampiran === 'string') return undefined;
 		return () => URL.revokeObjectURL(previewUrl);
 	}, [lampiran, previewUrl]);
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		onSave(report, { status, petugas, detail, hasilAkhir });
+		const updates = { status, petugas, detail, hasilAkhir };
+		setIsSaving(true);
+		setErrorMessage('');
+		try {
+			const savedReport = {
+				...report,
+				...updates,
+				...(await updateReport(report.idTiket, updates)),
+			};
+			navigate('/dashboard/laporan', { state: { updatedReport: savedReport } });
+		} catch (error) {
+			console.error('Gagal menyimpan perubahan laporan.', error);
+			setErrorMessage('Perubahan laporan gagal disimpan. Silakan coba kembali.');
+		} finally {
+			setIsSaving(false);
+		}
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="mx-auto max-w-6xl">
+		<DashboardLayout>
+			{isLoading ? (
+				<p className="text-sm text-slate-500">Memuat detail laporan...</p>
+			) : !report ? (
+				<div>
+					<p role="alert" className="mb-4 text-sm text-rose-600">
+						{errorMessage || 'Laporan tidak ditemukan.'}
+					</p>
+					<button
+						type="button"
+						onClick={() => navigate('/dashboard/laporan')}
+						className="rounded-lg bg-[#0B3C65] px-4 py-2 text-xs font-semibold text-white"
+					>
+						Kembali ke Laporan Masuk
+					</button>
+				</div>
+			) : (
+			<>
 			<header className="mb-5">
+				<button
+					type="button"
+					onClick={() => navigate('/dashboard/laporan')}
+					className="mb-3 inline-flex items-center gap-2 text-xs font-semibold text-[#0B3C65] hover:underline"
+				>
+					<Icon name="arrow-left-outline" />
+					Kembali ke Laporan Masuk
+				</button>
 				<h2 className="text-2xl font-bold tracking-tight text-[#0B3C65]">
 					Edit Data Laporan Masuk
 				</h2>
@@ -79,7 +173,12 @@ export default function DetailLaporanMasuk({ report, onClose, onSave }) {
 					peredaran di lingkungan kampus POLINELA.
 				</p>
 			</header>
-
+			<form onSubmit={handleSubmit} className="w-full">
+			{errorMessage && (
+				<p role="alert" className="mb-4 text-xs font-medium text-rose-600">
+					{errorMessage}
+				</p>
+			)}
 			<div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1.55fr)_minmax(280px,1fr)]">
 				<section className="rounded-xl border-t-2 border-[#0B3C65] bg-white p-4 shadow-sm sm:p-5">
 					<FormSectionTitle
@@ -209,19 +308,23 @@ export default function DetailLaporanMasuk({ report, onClose, onSave }) {
 			<footer className="mt-5 flex flex-wrap justify-end gap-2">
 				<button
 					type="button"
-					onClick={onClose}
+					onClick={() => navigate('/dashboard/laporan')}
 					className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
 				>
 					Batal
 				</button>
 				<button
 					type="submit"
-					className="flex items-center rounded-lg bg-[#0B3C65] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#082F50]"
+					disabled={isSaving}
+					className="flex items-center rounded-lg bg-[#0B3C65] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#082F50] disabled:cursor-not-allowed disabled:opacity-60"
 				>
 					<Icon name="file-check" className="mr-1.5" />
-					Simpan Perubahan
+					{isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
 				</button>
 			</footer>
-		</form>
+			</form>
+		</>
+		)}
+		</DashboardLayout>
 	);
 }

@@ -3,7 +3,7 @@ import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import { Link } from 'react-router-dom';
 import Icon from '../../../components/common/Icon';
-import { EDUCATION_ARTICLES, getEducationArticles } from '../../../services/educationService.js';
+import { EDUCATION_ARTICLES, getEducationArticles } from '../../../services/berandaService.js';
 
 function ArticleCard({ article }) {
     return (

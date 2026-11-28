@@ -9,6 +9,7 @@ import Step4 from './Step4.jsx';
 export default function Lapor() {
     const [step, setStep] = useState(1);
     const [description, setDescription] = useState('');
+    const [category, setCategory] = useState('');
     const [dateTime, setDateTime] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileError, setFileError] = useState('');
@@ -40,8 +41,27 @@ export default function Lapor() {
     const clearDraft = () => {
         document.getElementById('report-form')?.reset();
         setDescription('');
+        setCategory('');
+        setDateTime('');
         setSelectedFile(null);
         setFileError('');
+        setZone('');
+        setSpecificLocation('');
+        setAgreedToAccuracy(false);
+        setAgreedToRisk(false);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        if (step === 1) {
+            setStep(2);
+        } else if (step === 2) {
+            setStep(3);
+        } else if (step === 3) {
+            setSubmittedAt(new Date());
+            setStep(4);
+        }
     };
 
     return (
@@ -69,45 +89,43 @@ export default function Lapor() {
                         </div>
                     </section>
 
-                    {step === 1 ? (
-                        <Step1
-                            description={description}
-                            setDescription={setDescription}
-                            dateTime={dateTime}
-                            setDateTime={setDateTime}
-                            selectedFile={selectedFile}
-                            fileError={fileError}
-                            isDragging={isDragging}
-                            setIsDragging={setIsDragging}
-                            selectFile={selectFile}
-                            clearDraft={clearDraft}
-                            fileInputRef={fileInputRef}
-                            onNext={() => setStep(2)}
-                        />
-                    ) : step === 2 ? (
-                        <Step2
-                            zone={zone}
-                            setZone={setZone}
-                            specificLocation={specificLocation}
-                            setSpecificLocation={setSpecificLocation}
-                            onPrevious={() => setStep(1)}
-                            onNext={() => setStep(3)}
-                        />
-                    ) : step === 3 ? (
-                        <Step3
-                            agreedToAccuracy={agreedToAccuracy}
-                            setAgreedToAccuracy={setAgreedToAccuracy}
-                            agreedToRisk={agreedToRisk}
-                            setAgreedToRisk={setAgreedToRisk}
-                            onPrevious={() => setStep(2)}
-                            onSubmitSuccess={() => {
-                                setSubmittedAt(new Date());
-                                setStep(4);
-                            }}
-                        />
-                    ) : (
-                        <Step4 submittedAt={submittedAt} />
-                    )}
+                    <form id="report-form" onSubmit={handleSubmit}>
+                        {step === 1 ? (
+                            <Step1
+                                category={category}
+                                setCategory={setCategory}
+                                description={description}
+                                setDescription={setDescription}
+                                dateTime={dateTime}
+                                setDateTime={setDateTime}
+                                selectedFile={selectedFile}
+                                fileError={fileError}
+                                isDragging={isDragging}
+                                setIsDragging={setIsDragging}
+                                selectFile={selectFile}
+                                clearDraft={clearDraft}
+                                fileInputRef={fileInputRef}
+                            />
+                        ) : step === 2 ? (
+                            <Step2
+                                zone={zone}
+                                setZone={setZone}
+                                specificLocation={specificLocation}
+                                setSpecificLocation={setSpecificLocation}
+                                onPrevious={() => setStep(1)}
+                            />
+                        ) : step === 3 ? (
+                            <Step3
+                                agreedToAccuracy={agreedToAccuracy}
+                                setAgreedToAccuracy={setAgreedToAccuracy}
+                                agreedToRisk={agreedToRisk}
+                                setAgreedToRisk={setAgreedToRisk}
+                                onPrevious={() => setStep(2)}
+                            />
+                        ) : (
+                            <Step4 submittedAt={submittedAt} />
+                        )}
+                    </form>
                 </div>
             </main>
 

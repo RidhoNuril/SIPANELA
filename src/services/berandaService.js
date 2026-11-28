@@ -1,7 +1,4 @@
-import api from '../api/axiosConfig.js';
 import { withMockDelay } from './mockUtils.js';
-
-const USE_MOCK = true;
 
 export const EDUCATION_ARTICLES = [
 	{
@@ -81,19 +78,13 @@ export const HERO_IMAGES = [
 ];
 
 export function getEducationArticles() {
-	return USE_MOCK
-		? withMockDelay(EDUCATION_ARTICLES)
-		: api.get('/education/articles').then((response) => response.data);
+	return withMockDelay(EDUCATION_ARTICLES);
 }
 
 export function getPreventionPillars() {
-	return USE_MOCK
-		? withMockDelay(PREVENTION_PILLARS)
-		: api.get('/education/prevention-pillars').then((response) => response.data);
+	return withMockDelay(PREVENTION_PILLARS);
 }
 
 export function getHeroImages() {
-	return USE_MOCK
-		? withMockDelay(HERO_IMAGES)
-		: api.get('/home/hero-images').then((response) => response.data);
+	return withMockDelay(HERO_IMAGES);
 }

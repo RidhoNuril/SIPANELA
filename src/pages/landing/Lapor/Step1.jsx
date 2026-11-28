@@ -6,6 +6,8 @@ import {
 } from '../../../services/reportService.js';
 
 export default function Step1({
+    category,
+    setCategory,
     description,
     setDescription,
     setDateTime,
@@ -16,8 +18,7 @@ export default function Step1({
     setIsDragging,
     selectFile,
     clearDraft,
-    fileInputRef,
-    onNext
+    fileInputRef
 }) {
     const [categories, setCategories] = useState(REPORT_FORM_CATEGORIES);
 
@@ -30,7 +31,7 @@ export default function Step1({
     return (
         <section className="overflow-hidden rounded-xl border border-[#E1E8EF] bg-white">
             <div className="h-1.5 bg-[#1CA1C7]" />
-            <form id="report-form" className="p-6 sm:p-8" onSubmit={(event) => { event.preventDefault(); onNext(); }}>
+            <div className="p-6 sm:p-8">
                 <div className="border-b border-[#EDF1F5] pb-5">
                     <h1 className="text-xl font-bold leading-tight text-[#0B3C65] sm:text-2xl">Formulir Pelaporan Publik</h1>
                     <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#71849B]">
@@ -43,7 +44,7 @@ export default function Step1({
                         Kategori Jenis Pelanggaran <span className="text-[#E54646]">*</span>
                     </label>
                     <p className="mt-1 text-xs text-[#71849B]">Pilih klasifikasi yang paling mendekati situasi yang Anda saksikan.</p>
-                    <select id="category" name="category" required defaultValue="" className="mt-2 h-11 w-full rounded-lg border border-[#DCE5EE] bg-white px-3 text-sm text-[#52657C] outline-none focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15">
+                    <select id="category" name="category" required value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 h-11 w-full rounded-lg border border-[#DCE5EE] bg-white px-3 text-sm text-[#52657C] outline-none focus:border-[#168BCC] focus:ring-2 focus:ring-[#168BCC]/15">
                         <option value="" disabled>-- Pilih Kategori Pelanggaran --</option>
                         {categories.map((category) => <option key={category}>{category}</option>)}
                     </select>
@@ -78,6 +79,8 @@ export default function Step1({
                     <input
                     id="event-datetime"
                     type="datetime-local"
+                    name="dateTime"
+                    required
                     value={dateTime}
                     onChange={(e) => setDateTime(e.target.value)}
                     min="2026-01-01T00:00"
@@ -147,7 +150,7 @@ export default function Step1({
                         <Icon name="arrow-right-long" className="h-4 w-4" />
                     </button>
                 </div>
-            </form>
+            </div>
         </section>
     );
 }

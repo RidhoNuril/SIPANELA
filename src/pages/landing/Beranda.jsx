@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/common/Footer.jsx';
 import Navbar from '../../components/common/Navbar.jsx';
 import Icon from '../../components/common/Icon';
-import { getHeroImages, HERO_IMAGES } from '../../services/educationService.js';
+import { getHeroImages, HERO_IMAGES } from '../../services/berandaService.js';
 
 function HeroSection({ heroImages, activeImage, changeImage }) {
     return (

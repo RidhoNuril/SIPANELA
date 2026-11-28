@@ -1,15 +1,96 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/logo_sipanela.svg';
 import Icon from '../../components/common/Icon';
+import { login } from '../../services/authService.js';
+import Toast from '../../components/common/Toast.jsx';
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationErrors, setValidationErrors] = useState({});
+    const navigate = useNavigate();
+    const [toast, setToast] = useState({
+        isOpen: false,
+        type: "success",
+        title: "",
+        message: "",
+    });
+
+    function validateForm(values) {
+        const errors = {};
+
+        if (!values.username?.trim()) {
+            errors.username = 'Username wajib diisi.';
+        }
+
+        if (!values.password) {
+            errors.password = 'Password wajib diisi.';
+        }
+
+        return errors;
+    }
+
+    function handleFieldChange(event) {
+        const formData = new FormData(event.currentTarget.form);
+        const values = Object.fromEntries(formData.entries());
+
+        setValidationErrors((currentErrors) => (
+            Object.keys(currentErrors).length ? validateForm(values) : currentErrors
+        ));
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const values = Object.fromEntries(formData.entries());
+        const errors = validateForm(values);
+        setValidationErrors(errors);
+
+        if (Object.keys(errors).length) {
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const response = await login({
+                username: values.username,
+                password: values.password,
+            });
+            
+            // message toast ambil dari response
+            setToast({
+                isOpen: true,
+                type: "success",
+                title: "Login Berhasil!",
+                message: "Anda berhasil login",
+            });
+
+            navigate('/dashboard');
+        } catch (error) {
+            setToast({
+                isOpen: true,
+                type: "error",
+                title: "Login Gagal!",
+                message: "Ada masalah saat login. Silakan coba lagi.",
+            });
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#F8FAFB] px-6 py-24 font-['Poppins'] text-[#111827]">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_100%_0%,rgba(22,126,184,0.52),transparent_25%),radial-gradient(ellipse_at_0%_100%,rgba(223,190,119,0.78),transparent_29%),linear-gradient(135deg,#f8fafb_15%,#edf3f5_52%,#ffffff_100%)]" />
             <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px]" />
+            <Toast
+                isOpen={toast.isOpen}
+                type={toast.type}
+                title={toast.title}
+                message={toast.message}
+                onClose={() => setToast((prev) => ({ ...prev, isOpen: false }))}
+            />
 
             <Link to="/" className="absolute left-6 top-6 z-10 flex items-center gap-2.5 sm:left-16 sm:top-7">
                 <img src={Logo} alt="Logo SIPANELA" className="h-9 w-9" />
@@ -25,23 +106,31 @@ export default function Login() {
                     </p>
                 </div>
 
-                <form className="mt-7" onSubmit={(event) => event.preventDefault()}>
-                    <label htmlFor="username" className="mb-2 text-sm block font-medium text-[#20242A]">Nomor Pokok Mahasiswa (NPM)</label>
-                    <div className="flex items-center gap-3 mb-5 rounded-full border border-[#E6E6E6] bg-[#F9FAFB]/70 px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#0B3C65]/20">
-                        <input
-                            id="username"
-                            name="username"
-                            type="text"
-                            autoComplete="username"
-                            required
-                            placeholder="Contoh : 21753042 "
-                            className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-[#929292]"
-                        />
-                        <Icon name="user" className="h-5 w-5 text-[#858585]" />
+                <form className="mt-7" noValidate onSubmit={handleSubmit}>
+                    <label htmlFor="username" className="mb-2 text-sm block font-medium text-[#20242A]">Username</label>
+                    <div className="mb-5">
+                        <div className={`flex items-center gap-3 rounded-full border bg-[#F9FAFB]/70 px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#0B3C65]/20 ${validationErrors.username ? 'border-red-500' : 'border-[#E6E6E6]'}`}>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                autoComplete="username"
+                                required
+                                placeholder="Contoh : 21753042 "
+                                aria-invalid={Boolean(validationErrors.username)}
+                                aria-describedby={validationErrors.username ? 'username-error' : undefined}
+                                onChange={handleFieldChange}
+                                className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-[#929292]"
+                            />
+                            <Icon name="user" className="h-5 w-5 text-[#858585]" />
+                        </div>
+                        {validationErrors.username && (
+                            <p id="username-error" className="mt-1 text-xs text-red-600">{validationErrors.username}</p>
+                        )}
                     </div>
 
                     <label htmlFor="password" className="mb-2 text-sm block font-medium text-[#20242A]">Password</label>
-                    <div className="flex items-center gap-3 rounded-full border border-[#E6E6E6] bg-[#F9FAFB]/70 px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#0B3C65]/20">
+                    <div className={`flex items-center gap-3 rounded-full border bg-[#F9FAFB]/70 px-5 py-3.5 focus-within:ring-2 focus-within:ring-[#0B3C65]/20 ${validationErrors.password ? 'border-red-500' : 'border-[#E6E6E6]'}`}>
                         <span className="sr-only">Password</span>
                         <input
                             id="password"
@@ -49,6 +138,9 @@ export default function Login() {
                             type={showPassword ? 'text' : 'password'}
                             autoComplete="current-password"
                             required
+                            aria-invalid={Boolean(validationErrors.password)}
+                            aria-describedby={validationErrors.password ? 'password-error' : undefined}
+                            onChange={handleFieldChange}
                             placeholder="Minimal 8 Karakter"
                             className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-[#929292]"
                         />
@@ -65,9 +157,12 @@ export default function Login() {
                             )}
                         </button>
                     </div>
+                    {validationErrors.password && (
+                        <p id="password-error" className="mt-1 text-xs text-red-600">{validationErrors.password}</p>
+                    )}
 
-                    <button type="submit" className="h-12 mt-6 w-full rounded-full bg-[#0D416A] font-bold text-white transition-colors hover:bg-[#092F4D]">
-                        Login
+                    <button type="submit" disabled={isSubmitting} className="h-12 mt-6 w-full rounded-full bg-[#0D416A] font-bold text-white transition-colors hover:bg-[#092F4D] disabled:cursor-not-allowed disabled:opacity-70">
+                        {isSubmitting ? 'Memproses...' : 'Login'}
                     </button>
                 </form>
 

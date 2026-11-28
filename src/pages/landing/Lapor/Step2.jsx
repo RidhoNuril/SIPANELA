@@ -3,13 +3,12 @@ export default function Step2({
     setZone,
     specificLocation,
     setSpecificLocation,
-    onPrevious,
-    onNext
+    onPrevious
 }) {
     return (
         <section className="overflow-hidden rounded-xl border border-[#E1E8EF] bg-white">
             <div className="h-1.5 bg-[#1CA1C7]" />
-            <form className="p-6 sm:p-8" onSubmit={(event) => { event.preventDefault(); onNext(); }}>
+            <div className="p-6 sm:p-8">
                 <header>
                     <h1 className="text-lg font-bold leading-tight text-[#17243A] sm:text-2xl">Tentukan Titik &amp; Patokan Lokasi Kejadian</h1>
                     <p className="mt-1 text-sm leading-relaxed text-[#52657C]">
@@ -65,7 +64,7 @@ export default function Step2({
                         Selanjutnya: Konfirmasi &amp; Kirim →
                     </button>
                 </div>
-            </form>
+            </div>
         </section>
 
     );

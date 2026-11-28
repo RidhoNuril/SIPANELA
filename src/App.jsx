@@ -8,6 +8,7 @@ import Register from './pages/landing/Register.jsx';
 import Tentang from './pages/landing/Tentang.jsx';
 import Dashboard from './pages/dashboard/Dashboard.jsx';
 import LaporanMasuk from './pages/dashboard/laporan_masuk/LaporanMasuk.jsx';
+import DetailLaporanMasuk from './pages/dashboard/laporan_masuk/DetailLaporanMasuk.jsx';
 import KelolaKategori from './pages/dashboard/kelola_kategori/KelolaKategori.jsx';
 import KelolaArtikel from './pages/dashboard/kelola_artikel/KelolaArtikel.jsx';
 import FormKategori from './pages/dashboard/kelola_kategori/FormKategori.jsx';
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/dashboard/survey" element={<SurveyKepuasan />} />
         <Route path="/dashboard/survey/:ticketId" element={<DetailSurveyKepuasan />} />
         <Route path="/dashboard/laporan" element={<LaporanMasuk />} />
+        <Route path="/dashboard/laporan/:ticketId" element={<DetailLaporanMasuk />} />
         <Route path="/dashboard/rekapitulasi" element={<Rekapitulasi />} />
         <Route path="/dashboard/kategori" element={<KelolaKategori />} />
         <Route path="/dashboard/kategori/tambah" element={<FormKategori />} />

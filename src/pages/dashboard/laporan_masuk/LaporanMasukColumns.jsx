@@ -1,6 +1,6 @@
 import Icon from '../../../components/common/Icon';
 
-const columns = (onVerify) => [
+const columns = (onOpen) => [
 	{
 		accessorKey: 'idTiket',
 		header: 'ID TIKET',
@@ -60,7 +60,7 @@ const columns = (onVerify) => [
 			<div className="text-center">
 				<button
 					type="button"
-					onClick={() => onVerify(info.row.original)}
+					onClick={() => onOpen(info.row.original)}
 					className="px-5 py-1.5 bg-[#0B3C65] hover:bg-blue-900 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
 				>
 					Buka Laporan

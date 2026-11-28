@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../../../components/common/Footer.jsx';
 import Navbar from '../../../components/common/Navbar.jsx';
 import Icon from '../../../components/common/Icon.jsx';
-import { getPreventionPillars, PREVENTION_PILLARS } from '../../../services/educationService.js';
+import { getPreventionPillars, PREVENTION_PILLARS } from '../../../services/berandaService.js';
 
 export default function ArtikelDetail() {
     const [preventionPillars, setPreventionPillars] = useState(PREVENTION_PILLARS);

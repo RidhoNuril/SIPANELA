@@ -5,20 +5,12 @@ export default function Step3({
     setAgreedToAccuracy,
     agreedToRisk,
     setAgreedToRisk,
-    onPrevious,
-    onSubmitSuccess
+    onPrevious
 }) {
     return (
         <section className="overflow-hidden rounded-xl border border-[#E1E8EF] bg-white">
             <div className="h-1.5 bg-[#1CA1C7]" />
-            <form
-                className="p-6 sm:p-8"
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    if (!agreedToAccuracy || !agreedToRisk) return;
-                    onSubmitSuccess();
-                }}
-            >
+            <div className="p-6 sm:p-8">
                 <header>
                     <h1 className="text-xl font-bold leading-tight text-[#0B3C65] sm:text-2xl">Pernyataan &amp; Persetujuan Pelapor</h1>
                     <p className="mt-1 text-sm leading-relaxed text-[#71849B]">
@@ -52,7 +44,7 @@ export default function Step3({
                         Kirim Laporan
                     </button>
                 </div>
-            </form>
+            </div>
         </section>
 
     );
